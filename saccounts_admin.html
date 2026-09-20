@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<style>
+
+/* =======================================================
+====================== GLOBAL RESET ======================
+======================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    overflow-x:hidden;
+}
+
+/* =======================================================
+====================== ADMIN PANEL =======================
+======================================================= */
+
+body{
+
+    font-family:'Cairo',sans-serif;
+
+    direction:rtl;
+
+    background:
+    radial-gradient(circle at top left,#123d91 0%,transparent 25%),
+    radial-gradient(circle at bottom right,#0f3460 0%,transparent 30%),
+    linear-gradient(135deg,#020814,#071739,#0f3460);
+
+    color:white;
+
+    min-height:100vh;
+
+    padding-top:120px;
+}
+
+/* =======================================================
+====================== ADMIN TITLE =======================
+======================================================= */
+
+.header{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:1400px;
+
+    margin:30px auto;
+
+    padding:24px 30px;
+
+    border-radius:30px;
+
+    text-align:center;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    color:white;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(18px);
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.25);
+}
+
+.header::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:5px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        #ffb703,
+        transparent
+    );
+}
+
+/* =======================================================
+====================== MAIN HEADER START =================
+======================================================= */
+/* =======================================================
+======================= HEADER ===========================
+======================================================= */
+
+.main-header {
+    width: 100%;
+    min-height: 85px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 12px 5%;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 999;
+    direction: rtl; /* لضمان ترتيب العناصر: يمين (لوجو) -> وسط (عنوان) -> يسار (زر) */
+}
+
+/* جعل اللوجو دائري */
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+/* تنسيق Container النصوص في المنتصف */
+.brand-container {
+    text-align: center;
+}
+
+.brand-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(to right, #fff, #ffd369);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+    font-size: 14px;
+    color: #d9d9d9;
+    margin: 3px 0 0 0;
+    font-weight: 400;
+}
+
+/* زر تسجيل الخروج البيضاوي */
+.about-link {
+    color: white;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 50px; /* شكل بيضاوي كامل */
+    background: rgba(255, 255, 255, 0.08);
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.about-link:hover {
+    background: #ffd369;
+    color: #071739;
+}
+/* =======================================================
+======================= MAIN HEADER END ==================
+======================================================= */
+
+
+/* =======================================================
+====================== CONTAINER =========================
+======================================================= */
+
+.container{
+
+    width:100%;
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:
+    0
+    20px
+    100px;
+}
+
+/* =======================================================
+====================== CARD ==============================
+======================================================= */
+
+.card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    width:100%;
+
+    backdrop-filter:blur(18px);
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.04)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.10);
+
+    border-radius:28px;
+
+    padding:28px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.25);
+
+    transition:0.4s;
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:4px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        #ffb703,
+        transparent
+    );
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 20px 45px rgba(0,0,0,0.30);
+}
+
+/* =======================================================
+====================== TITLES ============================
+======================================================= */
+
+.card h3{
+
+    position:relative;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:
+    16px
+    34px;
+
+    border-radius:999px;
+
+    font-size:22px;
+
+    font-weight:800;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.18),
+        rgba(255,255,255,0.08)
+    );
+
+    border:
+    1px solid rgba(255,211,105,0.28);
+
+    margin-bottom:25px;
+
+    max-width:100%;
+
+    text-align:center;
+
+    flex-wrap:wrap;
+}
+
+/* =======================================================
+====================== TICKETS ===========================
+======================================================= */
+
+.ticket{
+
+    position:relative;
+
+    overflow:hidden;
+
+    width:100%;
+
+    border-radius:24px;
+
+    padding:20px;
+
+    margin-bottom:18px;
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    transition:0.35s;
+}
+
+.ticket::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:4px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        transparent
+    );
+}
+
+.ticket:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,0.20);
+}
+
+/* =======================================================
+====================== TABLE WRAPPER =====================
+======================================================= */
+
+.table-wrapper{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    border-radius:22px;
+}
+
+/* =======================================================
+====================== TABLE =============================
+======================================================= */
+
+table{
+
+    width:100%;
+
+    min-width:700px;
+
+    border-collapse:collapse;
+
+    margin-top:10px;
+
+    border-radius:22px;
+
+    overflow:hidden;
+}
+
+th{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.25),
+        rgba(255,183,3,0.15)
+    );
+
+    color:#ffd369;
+
+    padding:18px;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    white-space:nowrap;
+}
+
+td{
+
+    padding:16px;
+
+    text-align:center;
+
+    color:rgba(255,255,255,0.88);
+
+    background:
+    rgba(255,255,255,0.03);
+
+    border-bottom:
+    1px solid rgba(255,255,255,0.05);
+
+    word-break:break-word;
+}
+
+/* =======================================================
+====================== INPUTS ============================
+======================================================= */
+
+select,
+input{
+
+    width:100%;
+
+    max-width:100%;
+
+    padding:16px;
+
+    margin-top:10px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:15px;
+
+    font-family:'Cairo',sans-serif;
+
+    transition:0.35s;
+}
+
+input::placeholder{
+
+    color:rgba(255,255,255,0.45);
+}
+
+option{
+
+    color:black;
+}
+
+input:focus,
+select:focus{
+
+    transform:scale(1.01);
+
+    border:
+    1px solid rgba(255,211,105,0.45);
+
+    box-shadow:
+    0 0 18px rgba(255,211,105,0.18);
+}
+
+/* =======================================================
+====================== BUTTONS ===========================
+======================================================= */
+
+button{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    transition:0.35s;
+
+    font-weight:700;
+
+    font-family:'Cairo',sans-serif;
+
+    max-width:100%;
+}
+
+button:hover{
+
+    transform:translateY(-3px);
+}
+
+/* زر البحث */
+
+.search-btn{
+
+    width:100%;
+
+    margin-top:10px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffd369,
+        #ffb703
+    );
+
+    color:#071739;
+
+    font-size:16px;
+
+    font-weight:800;
+}
+
+/* assign */
+
+.assign{
+
+    background:
+    linear-gradient(
+        135deg,
+        #00c896,
+        #00a97f
+    );
+
+    color:white;
+}
+
+/* update */
+
+.update{
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffb347,
+        #ff9800
+    );
+
+    color:white;
+}
+
+/* role */
+
+.role{
+
+    background:
+    linear-gradient(
+        135deg,
+        #4da3ff,
+        #1976d2
+    );
+
+    color:white;
+}
+
+/* reason */
+
+.reason{
+
+    background:
+    linear-gradient(
+        135deg,
+        #bb6cff,
+        #8e44ad
+    );
+
+    color:white;
+}
+
+/* =======================================================
+====================== REPORT BUTTON =====================
+======================================================= */
+
+.report-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    font-size:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffd369,
+        #ffb703
+    );
+
+    color:#071739;
+
+    font-weight:800;
+}
+
+/* =======================================================
+====================== FOOTER ============================
+======================================================= */
+
+.main-footer{
+
+    margin-top:60px;
+
+    width:100%;
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    backdrop-filter:blur(15px);
+
+    background:rgba(255,255,255,0.04);
+
+    border-top:
+    1px solid rgba(255,255,255,0.08);
+}
+
+.social{
+    margin-bottom:16px;
+}
+
+.social a{
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:45px;
+
+    height:45px;
+
+    margin:6px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:0.4s;
+}
+
+.social a:hover{
+
+    transform:translateY(-6px);
+
+    background:#ffd369;
+
+    color:#071739;
+}
+
+.footer-text{
+
+    color:rgba(255,255,255,0.7);
+
+    font-size:14px;
+}
+
+/* =======================================================
+====================== MOBILE ============================
+======================================================= */
+
+@media(max-width:768px){
+
+    body{
+        padding-top:150px;
+    }
+
+    .main-header{
+
+        flex-direction:column;
+
+        justify-content:center;
+
+        text-align:center;
+
+        padding:15px;
+    }
+
+    .brand{
+        font-size:22px;
+    }
+
+    .container{
+
+        padding:
+        0
+        12px
+        80px;
+    }
+
+    .header{
+
+        font-size:24px;
+
+        padding:20px;
+
+        border-radius:24px;
+    }
+
+    .card{
+
+        padding:18px;
+
+        border-radius:22px;
+    }
+
+    .card h3{
+
+        width:100%;
+
+        font-size:18px;
+
+        padding:14px 18px;
+    }
+
+    .ticket{
+
+        padding:16px;
+    }
+
+    table{
+        min-width:600px;
+    }
+
+    th,
+    td{
+
+        padding:12px;
+
+        font-size:14px;
+    }
+
+    button{
+
+        width:100%;
+    }
+}
+
+/* =======================================================
+====================== SMALL MOBILE ======================
+======================================================= */
+
+@media(max-width:480px){
+
+    body{
+        padding-top:170px;
+    }
+
+    .brand{
+        font-size:19px;
+    }
+
+    .header{
+        font-size:20px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .ticket{
+        padding:14px;
+    }
+
+    input,
+    select{
+
+        padding:14px;
+
+        font-size:14px;
+    }
+
+    .search-btn,
+    .report-btn{
+
+        font-size:15px;
+    }
+}
+/* =======================================================
+====================== TICKETS GRID ======================
+======================================================= */
+
+.tickets-container{
+
+    display:grid;
+
+    grid-template-columns:1fr;
+
+    gap:20px;
+}
+
+/* عند الشاشات الواسعة تظهر بطاقتين */
+
+@media(min-width:900px){
+
+    .tickets-container{
+
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+/* =======================================================
+====================== TICKET DESIGN =====================
+======================================================= */
+
+.ticket{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:26px;
+
+    padding:20px;
+
+    margin-bottom:0;
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.09),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    transition:0.4s;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.18);
+}
+
+.ticket:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 18px 40px rgba(0,0,0,0.28);
+}
+
+.ticket::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:4px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        transparent
+    );
+}
+
+/* =======================================================
+====================== TOP SECTION =======================
+======================================================= */
+
+.ticket-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:18px;
+
+    flex-wrap:wrap;
+}
+
+.ticket-title{
+
+    font-size:20px;
+
+    font-weight:800;
+
+    color:white;
+}
+
+/* =======================================================
+====================== STATUS ============================
+======================================================= */
+
+.ticket-status{
+
+    padding:8px 16px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:800;
+}
+
+.status-open{
+
+    background:
+    linear-gradient(
+        135deg,
+        #09810f,
+        #095f15
+    );
+
+    color:white;
+}
+
+.status-progress{
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffb347,
+        #ff9800
+    );
+
+    color:white;
+}
+
+.status-closed{
+
+    background:
+    linear-gradient(
+        135deg,
+        #661010,
+        #3a1010
+    );
+
+    color:white;
+}
+
+/* =======================================================
+====================== BODY ==============================
+======================================================= */
+
+.ticket-body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.ticket-item{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    padding:12px 14px;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.04);
+
+    border:
+    1px solid rgba(255,255,255,0.05);
+
+    flex-wrap:wrap;
+}
+
+.label{
+
+    color:#ffd369;
+
+    font-weight:800;
+
+    min-width:130px;
+}
+
+.value{
+
+    color:rgba(255,255,255,0.9);
+
+    flex:1;
+
+    word-break:break-word;
+}
+
+/* =======================================================
+====================== ACTIONS ===========================
+======================================================= */
+
+.ticket-actions{
+
+    margin-top:18px;
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.ticket-actions button{
+
+    min-width:160px;
+}
+
+/* =======================================================
+====================== MOBILE ============================
+======================================================= */
+
+@media(max-width:768px){
+
+    .ticket{
+
+        padding:16px;
+    }
+
+    .ticket-title{
+
+        font-size:18px;
+    }
+
+    .ticket-item{
+
+        flex-direction:column;
+    }
+
+    .label{
+
+        min-width:100%;
+    }
+
+    .ticket-actions button{
+
+        width:100%;
+    }
+}
+
+/* =======================================================
+   تنسيقات زر الأيقونة العائم وأمر التكليف المباشر للآدمن
+======================================================= */
+
+/* تنسيق زر الأيقونة العائم */
+#createTicketBtn {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+    color: white !important;
+    border: none !important;
+    width: 60px;
+    height: 60px;
+    border-radius: 50% !important;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out !important;
+    margin: 20px 0;
+}
+
+#createTicketBtn:hover {
+    transform: rotate(15deg) scale(1.05);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6);
+}
+
+/* التبديل لحالة الزر عندما يكون الفورم مفتوحاً (تأثير اختياري) */
+#createTicketBtn.active {
+    background: linear-gradient(135deg, #dc3545, #b02a37) !important;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    transform: rotate(135deg); /* يدور ليتحول لشكل إغلاق أو إلغاء */
+}
+
+/* كلاس كونتير نموذج التذكرة المباشرة */
+#createTicketForm {
+    background: #ffffff !important;
+    padding: 30px;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
+    direction: rtl;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* كلاس التأثير النشط عند إظهار الفورم جافا سكريبت */
+#createTicketForm.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* تنسيق الحقول النصية والقوائم داخل الفورم الجديد */
+#createTicketForm input[type="text"],
+#createTicketForm select,
+#createTicketForm textarea {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 0 12px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #1e293b;
+    transition: all 0.3s ease;
+    font-family: "Cairo", sans-serif;
+}
+
+/* تنسيق الحقل المخصص للقراءة فقط (عنوان التقرير التلقائي) */
+#createTicketForm input[readonly] {
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed;
+    font-weight: 600;
+}
+
+/* تأثير التركيز (Focus) على الحقول المفتوحة للكتابة */
+#createTicketForm input:not([readonly]):focus,
+#createTicketForm select:focus,
+#createTicketForm textarea:focus {
+    border-color: #0d6efd !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* تنسيق حقل الوصف والتعليق */
+#createTicketForm textarea {
+    height: 120px !important;
+    padding: 12px !important;
+    resize: none;
+}
+
+/* تحسينات الشاشات الصغيرة الاستجابية للفورم */
+@media (max-width: 768px) {
+    #createTicketForm {
+        padding: 20px;
+    }
+    
+    #createTicketForm div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important; /* تحويل الجريد لعمود واحد في الموبايل */
+        gap: 12px !important;
+    }
+}
+/* تنسيقات الجداول المحدثة */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ticket-row {
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.ticket-row:hover {
+    background-color: #515b66 !important;
+}
+
+.details-row td {
+    border-top: none !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.arrow-cell span {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+/* =======================================================
+   تنسيقات مستقلة لأزرار التقارير الدائرية الجديدة والتلميحات
+======================================================= */
+
+/* الحاوية الأساسية للأزرار الجديدة */
+.unique-admin-report-container {
+    display: flex; 
+    gap: 20px; 
+    align-items: center;
+}
+
+/* التصميم الأساسي المخصص للأيقونة الدائرية الفريدة */
+.report-action-icon-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50% !important;
+    border: none !important;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ستايل لوني خاص بأيقونة البيانات (أزرق متدرج مخصص) */
+.data-report-theme {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+    color: white !important;
+}
+
+.data-report-theme:hover {
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+    transform: translateY(-3px) rotate(5deg);
+}
+
+/* ستايل لوني خاص بأيقونة الإحصائيات (أخضر متدرج مخصص) */
+.stats-report-theme {
+    background: linear-gradient(135deg, #198754, #146c43) !important;
+    color: white !important;
+}
+
+.stats-report-theme:hover {
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.4);
+    transform: translateY(-3px) rotate(-5deg);
+}
+
+/* الحاوية النسبية للنص التوضيحي المفرز */
+.report-hint-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* تصميم حركة وصندوق النص التوضيحي المستقل */
+.report-hint-wrapper .report-hint-popup-text {
+    visibility: hidden;
+    width: 210px;
+    background-color: #1e293b;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%; /* العرض أعلى الزر */
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+    font-size: 13px;
+    font-family: "Cairo", sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* السهم السفلي لصندوق التوضيح الجديد */
+.report-hint-wrapper .report-hint-popup-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1e293b transparent transparent transparent;
+}
+
+/* إظهار التلميح فور وقوف مؤشر الفأرة على الأيقونة الدائرية */
+.report-hint-wrapper:hover .report-hint-popup-text {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+@keyframes bounceIn {
+    0% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+    60% { transform: translateX(-50%) translateY(10px); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(0); }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- =======================================================
+====================== HEADER START =======================
+======================================================= -->
+<header class="main-header">
+
+    <!-- اللوجو على اليمين -->
+    <img src="photo/logo.png" class="logo" alt="Logo">
+
+    <!-- العنوان في المنتصف -->
+    <div class="brand-container">
+        <h1 class="brand-title">EL saleheya EL Gadida Universty</h1>
+        <p class="brand-subtitle">Ticketing system</p>
+    </div>
+
+    <!-- زر تسجيل الخروج على اليسار -->
+    <button class="about-link" id="logoutBtn" onclick="logout()">تسجيل الخروج</button>
+
+</header>
+<!-- =======================================================
+======================= HEADER END ========================
+======================================================= -->
+
+<div class="header">
+لوحة تحكم الادمن accounts
+</div>
+<!-- حاوية الإشعار المنبثق التنبيهي المخصص -->
+<div id="liveNotificationBadge" onclick="window.location.reload()" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 12px 25px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; cursor: pointer; align-items: center; gap: 10px; font-family: 'Cairo', sans-serif; animation: bounceIn 0.5s ease;">
+    🔔 <span>هناك تحديث جديد في التذاكر! اضغط هنا للتحديث.</span>
+</div>
+<div class="container">
+<!-- =======================================================
+====================== REPORTS ==========================
+======================================================= -->
+<div class="card" style="direction: rtl;">
+    <h3 style="margin-bottom: 20px; font-size: 18px; border-right: 4px solid #0d6efd; padding-right: 10px;">تقارير الدعم الفني</h3>
+    
+    <!-- حاوية فريدة مخصصة لأيقونات التقارير الجديدة -->
+    <div class="unique-admin-report-container">
+        
+        <!-- أيقونة تقرير بيانات بطاقات الدعم -->
+        <div class="report-hint-wrapper">
+            <button class="report-action-icon-btn data-report-theme" onclick="goReports()">
+                📋
+            </button>
+            <span class="report-hint-popup-text">تقرير بيانات بطاقات الدعم</span>
+        </div>
+
+        <!-- أيقونة التكليف المباشر (تظهر كزر عائم أو ثابت في لوحة التحكم) -->
+<button id="createTicketBtn" onclick="toggleAdminOrderForm()" style="background: #0d6efd; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(13,110,253,0.4); display: flex; align-items: center; justify-content: center; transition: 0.3s; margin-bottom: 20px;">
+    🚀
+</button>
+    </div>
+</div>
+
+
+<!-- نموذج التكليف المباشر (مخفي افتراضياً ويظهر عند إضافة كلاس active) -->
+<div id="createTicketForm" style="display: none; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; direction: rtl;">
+    <h3 style="color: #0d6efd; margin-top: 0; margin-bottom: 20px; font-size: 18px; border-right: 4px solid #0d6efd; padding-right: 10px;">إنشاء أمر تذكرة مباشر من الإدارة</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <!-- العنوان معبأ تلقائياً وقابل للقراءة فقط (Read-only) -->
+        <div style="display: flex; flex-direction: column;">
+            <label style="margin-bottom: 8px; font-weight: bold; color: #444;">عنوان التذكرة</label>
+            <input type="text" id="title" value="أمر مباشر من مدير إدارةالحسابات" readonly style="height: 45px; border: 1px solid #dcdcdc; border-radius: 8px; padding: 0 12px; font-size: 14px; background: #f4f6f9; color: #555;">
+        </div>
+
+        <!-- اختيار المهندس المفتوح للآدمن -->
+        <div style="display: flex; flex-direction: column;">
+            <label style="margin-bottom: 8px; font-weight: bold; color: #444;">المهندس المختص</label>
+            <select id="engineerSelect" style="height: 45px; border: 1px solid #dcdcdc; border-radius: 8px; padding: 0 12px; font-size: 14px; background: white;">
+                <option value="">اختر المحاسب الـ ...</option>
+            </select>
+        </div>
+
+        <!-- رقم الغرفة -->
+        <div style="display: flex; flex-direction: column;">
+            <label style="margin-bottom: 8px; font-weight: bold; color: #444;">رقم الغرفة / المكتب</label>
+            <input type="text" id="roomNumber" placeholder="مثال: 204 أو مكتب العميد" style="height: 45px; border: 1px solid #dcdcdc; border-radius: 8px; padding: 0 12px; font-size: 14px;">
+        </div>
+    </div>
+
+    <!-- وصف المشكلة -->
+    <div style="display: flex; flex-direction: column; margin-bottom: 20px;">
+        <label style="margin-bottom: 8px; font-weight: bold; color: #444;">تفاصيل التوجيه أو وصف العطل</label>
+        <textarea id="description" placeholder="اكتب تفاصيل العطل الفني هنا..." style="height: 100px; border: 1px solid #dcdcdc; border-radius: 8px; padding: 12px; font-size: 14px; resize: none;"></textarea>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" onclick="toggleAdminOrderForm()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">إلغاء</button>
+        <button type="button" onclick="createTicket()" style="background: #0d6efd; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">إرسال التذكرة</button>
+    </div>
+</div>
+    
+    <!-- =======================================================
+    ====================== ENGINEERS ========================
+    ======================================================= -->
+<div class="card collapsed-card">
+    <!-- الهيدر قابل للضغط لفتح وإغلاق القسم بالكامل -->
+    <div class="card-header" onclick="toggleCard('engineersCard', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: 10px;">
+        <h3 style="margin: 0;">المحاسب </h3>
+        <span class="card-arrow" style="font-size: 18px; color: #0d6efd; transition: transform 0.3s;">🔽</span>
+    </div>
+    
+    <!-- المحتوى المخفي افتراضياً -->
+    <div id="engineersCard" class="card-content" style="display: none; margin-top: 15px;">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الهاتف</th>
+                        <th>الكلية</th>
+                    </tr>
+                </thead>
+                <tbody id="engineersTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =======================================================
+====================== USERS ============================
+======================================================= -->
+<div class="card collapsed-card">
+    <!-- الهيدر قابل للضغط لفتح وإغلاق القسم بالكامل -->
+    <div class="card-header" onclick="toggleCard('usersCard', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: 10px;">
+        <h3 style="margin: 0;">إدارة المستخدمين</h3>
+        <span class="card-arrow" style="font-size: 18px; color: #0d6efd; transition: transform 0.3s;">🔽</span>
+    </div>
+
+    <!-- المحتوى المخفي افتراضياً مع الفلاتر والجدول -->
+    <div id="usersCard" class="card-content" style="display: none; margin-top: 15px;">
+        <div class="filter-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <input id="searchName" placeholder="بحث بالاسم" style="height: 40px; padding: 0 10px; border: 1px solid #ddd; border-radius: 6px;">
+            <input id="searchPhone" placeholder="بحث بالهاتف" style="height: 40px; padding: 0 10px; border: 1px solid #ddd; border-radius: 6px;">
+
+            <select id="facultyFilter" style="height: 40px; padding: 0 10px; border: 1px solid #ddd; border-radius: 6px;">
+                <option value="">كل الكليات</option>
+                <option value="pharmacy">pharmacy</option>
+                <option value="physical_therapy">physical therapy</option>
+                <option value="dentistry">dentistry</option>
+                <option value="computer_science">computer science</option>
+                <option value="management">management</option>
+            </select>
+
+            <button class="search-btn" onclick="loadUsers()" style="background: #0d6efd; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer;">بحث</button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الهاتف</th>
+                        <th>الكلية</th>
+                        <th>الصلاحية</th>
+                    </tr>
+                </thead>
+                <tbody id="users"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <!-- =======================================================
+====================== OPEN TICKETS =====================
+======================================================= -->
+<div class="card">
+    <h3>التذاكر المفتوحة</h3>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th> <!-- عمود السهم -->
+                    <th>عنوان التذكرة</th>
+                    <th>الموظف</th>
+                    <th>المهندس</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="openTickets"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- =======================================================
+====================== PROGRESS TICKETS =================
+======================================================= -->
+<div class="card">
+    <h3>التذاكر تحت العمل</h3>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>عنوان التذكرة</th>
+                    <th>الموظف</th>
+                    <th>المهندس</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="progressTickets"></tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="card">
+    <h3>التذاكر تم حلها (بانتظار التقييم والإغلاق)</h3>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>عنوان التذكرة</th>
+                    <th>الموظف</th>
+                    <th>المهندس</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="resolvedTickets"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- =======================================================
+====================== CLOSED TICKETS ===================
+======================================================= -->
+
+<div class="card">
+    <h3>التذاكر المغلقة</h3>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>عنوان التذكرة</th>
+                    <th>الموظف</th>
+                    <th>المهندس</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody id="closedTickets"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- =======================================================
+====================== FOOTER START =======================
+======================================================= -->
+<footer class="main-footer">
+
+    <div class="social">
+
+        <a href="#">F</a>
+        <a href="#">Y</a>
+        <a href="#">L</a>
+        <a href="#">W</a>
+        <a href="#">E</a>
+
+    </div>
+
+    <div class="footer-text">
+        جميع الحقوق محفوظة © M.H.D
+    </div>
+
+</footer>
+<!-- =======================================================
+======================= FOOTER END ========================
+======================================================= -->
+
+<script>
+
+const SUPABASE_URL="https://cqmhpvaaaduqbhjtyrgk.supabase.co/rest/v1/"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxbWhwdmFhYWR1cWJoanR5cmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA3OTUsImV4cCI6MjA5NDE4Njc5NX0.eqZ69jTSRFvPhjSVx2KZe9-3LSw0cw8uAQ6D06ZkQFg"
+
+function logout() {
+
+    sessionStorage.clear();
+
+    window.location.replace("index.html");
+
+}
+
+
+let engineers=[]
+
+async function fetchAPI(url){
+
+let res=await fetch(url,{
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:"Bearer "+SUPABASE_KEY
+}
+})
+
+return await res.json()
+
+}
+// متغير للاحتفاظ بأكبر معرف تذكرة عند تحميل الصفحة
+let maxTicketIdOnLoad = 0;
+
+async function initLiveNotification() {
+    try {
+        // جلب آخر تذكرة مسجلة فقط لتحديد نقطة البداية
+        let initialData = await fetchAPI(SUPABASE_URL + "tickets?order=id.desc&limit=1");
+        if (initialData && initialData.length > 0) {
+            maxTicketIdOnLoad = initialData[0].id;
+        }
+
+        // بدء الفحص الدوري كل 10 ثوانٍ في الخلفية
+        setInterval(async () => {
+            try {
+                let latestData = await fetchAPI(SUPABASE_URL + "tickets?order=id.desc&limit=1");
+                if (latestData && latestData.length > 0) {
+                    let currentLatestId = latestData[0].id;
+                    
+                    // إذا ظهرت تذكرة بمعرف أكبر، فهذا يعني وجود تذكرة جديدة تماماً
+                    if (currentLatestId > maxTicketIdOnLoad) {
+                        let badge = document.getElementById("liveNotificationBadge");
+                        if (badge) {
+                            badge.style.display = "flex";
+                        }
+                    }
+                }
+            } catch (innerErr) {
+                console.error("خطأ أثناء الفحص الدوري للتذاكر:", innerErr);
+            }
+        }, 10000); // يفحص كل 10 ثوانٍ
+
+    } catch (err) {
+        console.error("خطأ أثناء تهيئة نظام الإشعارات:", err);
+    }
+}
+
+// تشغيل نظام الإشعارات الذكي فوراً
+initLiveNotification();
+
+// دالة تحويل حالة التذكرة إدارياً إلى "تم الحل" (resolved)
+async function closeTicketDirectly(ticketId) {
+    if(!confirm("هل أنت متأكد من تحويل حالة هذه التذكرة إلى (تم الحل) إدارياً؟")) return;
+    
+    try {
+        let response = await fetch(SUPABASE_URL + `tickets?id=eq.${ticketId}`, {
+            method: "PATCH",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({ 
+                status: "resolved" // 💡 تم التعديل هنا لتصبح الحالة "resolved" بدلاً من "closed"
+            })
+        });
+            
+        if(!response.ok) {
+            alert("حدث خطأ أثناء تحديث حالة التذكرة، يرجى التحقق من اتصال قاعدة البيانات.");
+            return;
+        }
+        
+        alert("تم تحويل حالة التذكرة إلى (تم الحل) بنجاح!");
+        
+        // تحديث الصفحة فوراً لتعكس الحالة والترتيب الجديد
+        window.location.reload();
+        
+    } catch(err) {
+        console.error("خطأ غير متوقع أثناء تحديث الحالة إلى resolved:", err);
+    }
+}
+
+async function loadEngineers(){
+    engineers = await fetchAPI(SUPABASE_URL + "users?role=eq.accounts");
+    let html = "";
+
+    for(let e of engineers){
+        html += `
+        <tr>
+            <td style="font-weight: bold;">👤 ${e.name}</td>
+            <td>${e.phone || "لا يوجد"}</td>
+            <td>${e.faculty || "غير محدد"}</td>
+        </tr>`;
+    }
+    document.getElementById("engineersTable").innerHTML = html;
+
+    // تحديث خيارات الفلاتر الأخرى
+    let opt = "<option value=''>كل المهندسين</option>";
+    for(let e of engineers){
+        opt += `<option value="${e.id}">${e.name}</option>`;
+    }
+    if(typeof engineerReport !== 'undefined') engineerReport.innerHTML = opt;
+    if(typeof engineerStats !== 'undefined') engineerStats.innerHTML = opt;
+    if(document.getElementById("directEngineerSelect")) document.getElementById("directEngineerSelect").innerHTML = opt;
+}
+
+async function loadUsers(){
+    let name = searchName.value;
+    let phone = searchPhone.value;
+    let faculty = facultyFilter.value;
+
+    let url = SUPABASE_URL + "users?";
+    let filters = [];
+    if(name) filters.push("name=ilike.*" + name + "*");
+    if(phone) filters.push("phone=ilike.*" + phone + "*");
+    if(faculty) filters.push("faculty=eq." + faculty);
+    url += filters.join("&");
+
+    let data = await fetchAPI(url);
+    let html = "";
+
+    for(let u of data){
+        html += `
+        <tr>
+            <td style="font-weight: bold;">👤 ${u.name}</td>
+            <td>${u.phone || "—"}</td>
+            <td>
+                <select onchange="changeFaculty('${u.id}', this.value)" style="height:35px; border-radius:6px; padding:0 5px;">
+                    <option value="pharmacy" ${u.faculty == "pharmacy" ? "selected" : ""}>pharmacy</option>
+                    <option value="physical_therapy" ${u.faculty == "physical_therapy" ? "selected" : ""}>physical therapy</option>
+                    <option value="dentistry" ${u.faculty == "dentistry" ? "selected" : ""}>dentistry</option>
+                    <option value="computer_science" ${u.faculty == "computer_science" ? "selected" : ""}>computer science</option>
+                    <option value="management" ${u.faculty == "management" ? "selected" : ""}>management</option>
+                </select>
+            </td>
+            <td>
+                <select onchange="changeRole('${u.id}', this.value)" style="height:35px; border-radius:6px; padding:0 5px;">
+                    <option value="employee" ${u.role == "employee" ? "selected" : ""}>employee</option>
+                    <option value="accounts" ${u.role == "accounts" ? "selected" : ""}>accounts</option>
+                    <option value="admin" ${u.role == "admin" ? "selected" : ""}>admin</option>
+                </select>
+            </td>
+        </tr>`;
+    }
+    users.innerHTML = html;
+}
+//==================================================
+// دالة إظهار وإخفاء محتوى الكارد بالكامل (الهيدر فقط الظاهر)
+//==================================================
+function toggleCard(cardContentId, headerElement) {
+    let content = document.getElementById(cardContentId);
+    let arrow = headerElement.querySelector('.card-arrow');
+
+    if (content && arrow) {
+        if (content.style.display === "none") {
+            content.style.display = "block";
+            arrow.textContent = "🔼"; // قلب السهم للأعلى عند الفتح
+            
+            // استدعاء البيانات تلقائياً عند فتح القسم لضمان حداثة البيانات
+            if (cardContentId === 'engineersCard') {
+                loadEngineers();
+            } else if (cardContentId === 'usersCard') {
+                loadUsers();
+            }
+        } else {
+            content.style.display = "none";
+            arrow.textContent = "🔽"; // إعادة السهم للأسفل عند الغلق
+        }
+    }
+}
+
+async function changeRole(id,role){
+
+await fetch(SUPABASE_URL+"users?id=eq."+id,{
+method:"PATCH",
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:"Bearer "+SUPABASE_KEY,
+"Content-Type":"application/json"
+},
+body:JSON.stringify({role:role})
+})
+
+alert("تم تحديث الصلاحية")
+
+}
+
+async function changeFaculty(id,faculty){
+
+await fetch(SUPABASE_URL+"users?id=eq."+id,{
+method:"PATCH",
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:"Bearer "+SUPABASE_KEY,
+"Content-Type":"application/json"
+},
+body:JSON.stringify({faculty:faculty})
+})
+
+alert("تم تحديث الكلية")
+
+}
+
+function engineerSelect(ticketId){
+
+let html=`<select onchange="assignEngineer(${ticketId},this.value)">`
+
+for(let e of engineers){
+html+=`<option value="${e.id}">${e.name}</option>`
+}
+
+html+="</select>"
+
+return html
+
+}
+
+async function assignEngineer(ticket,engineer){
+
+await fetch(SUPABASE_URL+"tickets?id=eq."+ticket,{
+method:"PATCH",
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:"Bearer "+SUPABASE_KEY,
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+assigned_to:engineer,
+status:"in_progress"
+})
+})
+
+alert("تم تحويل التيكت")
+
+loadTickets()
+
+}
+
+async function addReason(ticketId) {
+    let reasonText = prompt("يرجى إدخال السبب الفني أو تفاصيل الحل للمشكلة:");
+    if (!reasonText || !reasonText.trim()) return;
+
+    try {
+        // إرسال السبب الفني لقاعدة البيانات عبر الـ fetch
+        let response = await fetch(SUPABASE_URL + "ticket_solution", {
+            method: "POST",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                ticket_id: ticketId,
+                solution_text: reasonText.trim()
+            })
+        });
+
+        if (!response.ok) {
+            alert("حدث خطأ أثناء حفظ السبب الفني.");
+            return;
+        }
+
+        alert("تم حفظ السبب الفني بنجاح!");
+        
+        // 💡 السطر السحري الناقص: تحديث الصفحة فوراً لتحديث الجداول والبيانات
+        window.location.reload();
+
+    } catch (ex) {
+        console.error("خطأ أثناء إضافة السبب الفني:", ex);
+    }
+}
+async function loadTickets(){
+    try {
+        // 1. تحميل مستخدمي IT
+        let engineers = await fetchAPI(
+            SUPABASE_URL + "users?role=eq.accounts&select=id"
+        );
+
+        // 2. تحميل التذاكر بدون علاقة التقييم المعقدة لتفادي خطأ 400
+        let data = await fetchAPI(
+            SUPABASE_URL + "tickets?select=*,\
+creator:users!tickets_created_by_fkey(name,phone),\
+engineer:users!tickets_assigned_to_fkey(id,name),\
+solution:ticket_solution(solution_text)"
+        );
+
+        // 3. جلب التقييمات باسم الجدول الصحيح (ratings)
+        let ratings = await fetchAPI(
+            SUPABASE_URL + "ratings?select=ticket_id,rating,comment"
+);
+
+        // الحماية: التأكد من أن البيانات راجعة كمصفوفات
+        if (!Array.isArray(data)) {
+            console.error("خطأ في جلب التذاكر:", data);
+            return;
+        }
+        if (!Array.isArray(ratings)) ratings = [];
+
+        // دمج بيانات التقييم داخل كل تذكرة
+        data = data.map(t => {
+            let r = ratings.find(item => item.ticket_id === t.id);
+            return {
+                ...t,
+                rating: r || null
+            };
+        });
+
+        // استخراج معرفات مستخدمي IT
+        let itIds = Array.isArray(engineers) ? engineers.map(e => e.id) : [];
+
+        // الاحتفاظ فقط بالتذاكر الموجهة لـ IT
+        data = data.filter(t => itIds.includes(t.assigned_to));
+
+        let open = "";
+        let progress = "";
+        let resolved = "";
+        let closed = "";
+
+        // الاسم المستهدف لمنحه الصلاحية الاستثنائية
+        const specialEngineerName = "كريم يوسف حسن ابوشليح";
+
+        // 4. بناء صفوف الجداول والتفاصيل ديناميكياً
+        for(let t of data){
+            let statusClass = "";
+            let statusText = "";
+
+            if(t.status == "open"){
+                statusClass = "status-open";
+                statusText = "مفتوحة";
+            }
+            else if(t.status == "in_progress"){
+                statusClass = "status-progress";
+                statusText = "قيد التنفيذ";
+            }
+            else if(t.status == "resolved"){
+                statusClass = "status-resolved";
+                statusText = "تم الحل";
+            }
+            else if(t.status == "closed"){
+                statusClass = "status-closed";
+                statusText = "مغلقة";
+            }
+
+            // بناء الصف الأساسي للجدول
+            let rowBlock = `
+            <tr class="ticket-row">
+                <td class="arrow-trigger-cell" onclick="toggleDetails(${t.id}, event)" style="cursor: pointer; text-align: center; font-size: 16px; color: #0d6efd; width: 50px;">
+                    <span id="arrow-${t.id}">🔽</span>
+                </td>
+                <td style="font-weight: bold;">🎫 ${t.title}</td>
+                <td>${t.creator?.name || "غير معروف"}</td>
+                <td>${t.engineer?.name || "غير معين"}</td>
+                <td class="action-cell" style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+            `;
+
+            // فحص هل التذكرة مرتبطة بالمهندس كريم يوسف حسن ابوشليح
+            let isSpecialEng = t.engineer?.name === specialEngineerName;
+
+            if(t.status == "open"){
+                if(isSpecialEng) {
+                    rowBlock += `
+                    <button class="reason" onclick="addReason(${t.id})" style="background:#0d6efd; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-weight:bold;">
+                        ➕ إضافة سبب فني
+                    </button>
+                    `;
+                    if(t.solution?.solution_text) {
+                        rowBlock += `
+                        <button onclick="closeTicketDirectly(${t.id})" style="background:#198754; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-weight:bold;">
+                            ✅ تم الحل
+                        </button>
+                        `;
+                    }
+                } else {
+                    rowBlock += `${engineerSelect(t.id)}`;
+                }
+            }
+            else if(t.status == "in_progress"){
+                rowBlock += `
+                <button class="reason" onclick="addReason(${t.id})" style="background:#0d6efd; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-weight:bold;">
+                    ➕ إضافة سبب فني
+                </button>
+                `;
+                
+                if(isSpecialEng && t.solution?.solution_text) {
+                    rowBlock += `
+                    <button onclick="closeTicketDirectly(${t.id})" style="background:#198754; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-weight:bold;">
+                        ✅ تم الحل
+                    </button>
+                    `;
+                }
+            }
+            else if(t.status == "resolved"){
+                rowBlock += `
+                <button onclick="closeAndRateTicket(${t.id})" style="background:#6c757d; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-weight:bold;">
+                    ⭐ تقييم وإغلاق التذكرة
+                </button>
+                `;
+            }
+            else if(t.status == "closed"){
+                rowBlock += `
+                <span class="ticket-status ${statusClass}" style="padding:5px 12px; border-radius:6px; font-size:12px; font-weight:bold; display:inline-block;">
+                    ${statusText}
+                </span>
+                `;
+            }
+
+            rowBlock += `</td></tr>`;
+
+            // استخراج تفاصيل التقييم
+            let ratingText = t.rating?.rating ? `⭐ ${t.rating.rating} من 5` : "لم يتم التقييم بعد";
+            if(t.rating?.comment) ratingText += ` (${t.rating.comment})`;
+
+            // بناء صف كرت التفاصيل المخفي
+            let detailsBlock = `
+            <tr id="details-${t.id}" class="details-row" style="display: none; background: #f8fafc;">
+                <td colspan="5" style="padding: 15px; text-align: right; border-top: none;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; font-size: 14px; line-height: 1.6; color: #333;">
+                        <div><span style="font-weight:bold; color:#0d6efd;">📝 الوصف:</span> ${t.description || "لا يوجد وصف"}</div>
+                        <div><span style="font-weight:bold; color:#0d6efd;">📍 اللوكيشن:</span> ${t.location || "غير محدد"}</div>
+                        <div><span style="font-weight:bold; color:#0d6efd;">📞 رقم الهاتف:</span> ${t.creator?.phone || "غير متوفر"}</div>
+                        <div><span style="font-weight:bold; color:#0d6efd;">⚙️ السبب الفني:</span> ${t.solution?.solution_text || "لم يتم إضافة سبب فني"}</div>
+                        <div><span style="font-weight:bold; color:#0d6efd;">⭐ التقييم:</span> ${ratingText}</div>
+                    </div>
+                </td>
+            </tr>
+            `;
+
+            // توزيع الصفوف بناءً على الحالة
+            if(t.status == "open"){
+                open += rowBlock + detailsBlock;
+            }
+            else if(t.status == "in_progress"){
+                progress += rowBlock + detailsBlock;
+            }
+            else if(t.status == "resolved"){
+                resolved += rowBlock + detailsBlock;
+            }
+            else if(t.status == "closed"){
+                closed = rowBlock + detailsBlock + closed;
+            }
+        }
+
+        // 5. حقن الأكواد داخل الجداول بالأمان مع وجود العناصر
+        let openEl = document.getElementById("openTickets");
+        let progEl = document.getElementById("progressTickets");
+        let resEl = document.getElementById("resolvedTickets");
+        let closEl = document.getElementById("closedTickets");
+
+        if(openEl) openEl.innerHTML = open;
+        if(progEl) progEl.innerHTML = progress;
+        if(resEl) resEl.innerHTML = resolved;
+        if(closEl) closEl.innerHTML = closed;
+
+    } catch (err) {
+        console.error("خطأ أثناء تحميل التذاكر:", err);
+    }
+}
+
+async function closeAndRateTicket(ticketId) {
+    // 1. طلب التقييم بالنجوم من الأدمن
+    let ratingInput = prompt("ادخل التقييم الرقمي للخدمة (من 1 إلى 5):", "5");
+    if (ratingInput === null) return; // إلغاء العملية
+
+    let ratingNum = parseInt(ratingInput.trim());
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        alert("يرجى إدخال رقم صحيح بين 1 و 5.");
+        return;
+    }
+
+    // 2. طلب ملاحظة اختيارية
+    let commentInput = prompt("أضف ملاحظة أو تعليق على التقييم (اختياري):", "");
+
+    try {
+        // أ) تسجيل التقييم في جدول ratings الصحيح
+        let rateResponse = await fetch(SUPABASE_URL + "ratings", {
+            method: "POST",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                ticket_id: ticketId,
+                rating: ratingNum,
+                comment: commentInput ? commentInput.trim() : null
+            })
+        });
+
+        if (!rateResponse.ok) {
+            console.warn("تنبيه: قد يكون هناك تقييم مسجل مسبقاً لهذه التذكرة.");
+        }
+
+        // ب) تحويل حالة التذكرة نهائياً إلى مغلقة (closed)
+        let updateResponse = await fetch(SUPABASE_URL + `tickets?id=eq.${ticketId}`, {
+            method: "PATCH",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                status: "closed"
+            })
+        });
+
+        if (!updateResponse.ok) {
+            alert("حدث خطأ أثناء إغلاق التذكرة.");
+            return;
+        }
+
+        alert("تم تقييم التذكرة وإغلاقها بنجاح!");
+        window.location.reload();
+
+    } catch (err) {
+        console.error("خطأ أثناء إغلاق وتقييم التذكرة:", err);
+    }
+}
+
+//==================================================
+// دالة الـ Toggle الذكية لإظهار وإخفاء التفاصيل
+//==================================================
+function toggleDetails(ticketId, event) {
+    // حماية الأزرار والقوائم: إذا ضغط المستخدم على السيلكت (التحويل) أو زر السبب الفني، لا يتم إغلاق أو فتح السهم لضمان استقرار العمليات
+    if (event.target.tagName === 'SELECT' || event.target.tagName === 'BUTTON') {
+        return;
+    }
+
+    let detailsRow = document.getElementById(`details-${ticketId}`);
+    let arrowSpan = document.getElementById(`arrow-${ticketId}`);
+
+    if (detailsRow && arrowSpan) {
+        if (detailsRow.style.display === "none") {
+            detailsRow.style.display = "table-row";
+            arrowSpan.textContent = "🔼"; // قلب السهم للأعلى عند الفتح
+        } else {
+            detailsRow.style.display = "none";
+            arrowSpan.textContent = "🔽"; // إرجاع السهم للأسفل عند الغلق
+        }
+    }
+}
+
+async function generatePDF(){
+
+let tickets=await fetchAPI(
+SUPABASE_URL+
+"tickets?select=*,creator:users!tickets_created_by_fkey(name,phone),engineer:users!tickets_assigned_to_fkey(name)"
+)
+
+let engineers=await fetchAPI(
+SUPABASE_URL+"users?role=eq.accounts"
+)
+
+let content=[]
+
+for(let e of engineers){
+
+let list=tickets.filter(t=>t.assigned_to==e.id)
+
+if(!list.length)continue
+
+content.push({text:"بيانات المهندس",style:"header"})
+
+content.push({
+table:{
+body:[
+["ID","الاسم","الكلية","الهاتف"],
+[e.id,e.name,e.faculty||"",e.phone||""]
+]
+}
+})
+
+let rows=[["id","العنوان","الوصف","الموظف","الهاتف","الحالة","المهندس"]]
+
+for(let t of list){
+
+rows.push([
+t.id,
+t.title,
+t.description||"",
+t.creator?.name||"",
+t.creator?.phone||"",
+t.status,
+e.name
+])
+
+}
+
+content.push({table:{body:rows}})
+
+}
+
+let doc={content:content}
+
+pdfMake.createPdf(doc).download("report.pdf")
+
+}
+
+async function generateExcel(){
+
+let tickets=await fetchAPI(
+SUPABASE_URL+
+"tickets?select=*,creator:users!tickets_created_by_fkey(name,phone),engineer:users!tickets_assigned_to_fkey(name)"
+)
+
+let csv="\ufeffID,Title,Description,Employee,Phone,Status\n"
+
+for(let t of tickets){
+
+csv+=`${t.id},"${t.title}","${t.description||""}",${t.creator?.name||""},${t.creator?.phone||""},${t.status}\n`
+
+}
+
+let blob=new Blob([csv],{type:"text/csv;charset=utf-8;"})
+
+let link=document.createElement("a")
+
+link.href=URL.createObjectURL(blob)
+link.download="tickets.csv"
+link.click()
+
+}
+
+function toggleAdminOrderForm() {
+    const ticketForm = document.getElementById("createTicketForm");
+    const createTicketBtn = document.getElementById("createTicketBtn");
+
+    if (!ticketForm) return;
+
+    if (ticketForm.style.display === "none" || !ticketForm.classList.contains("active")) {
+        // إظهار النموذج وتفعيل الكلاسات
+        ticketForm.style.display = "block";
+        ticketForm.classList.add("active");
+        if (createTicketBtn) createTicketBtn.classList.add("active");
+
+        // تعبئة الـ Select بالمهندسين المتاحين فوراً من مصفوفة engineers المتوفرة في سكريبت الصفحة
+        let selectHtml = '<option value="">اختر المحاسب الـ ...</option>';
+        if (typeof engineers !== "undefined" && engineers.length > 0) {
+            engineers.forEach(e => {
+                selectHtml += `<option value="${e.id}">${e.name}</option>`;
+            });
+        }
+        let engSelect = document.getElementById("engineerSelect");
+        if (engSelect) engSelect.innerHTML = selectHtml;
+    } else {
+        // إخفاء النموذج
+        ticketForm.style.display = "none";
+        ticketForm.classList.remove("active");
+        if (createTicketBtn) createTicketBtn.classList.remove("active");
+    }
+}
+async function createTicket() {
+    try {
+        // قراءة البيانات المتاحة فقط
+        let title = document.getElementById("title")?.value?.trim() || "";
+        let description = document.getElementById("description")?.value?.trim() || "";
+        let room = document.getElementById("roomNumber")?.value?.trim() || "";
+
+        // التحقق من الحقول الفارغة
+        if (!title || !description || !room) {
+            alert("يرجى إكمال جميع الحقول المطلوبة قبل إرسال التذكرة!");
+            return; // إيقاف التنفيذ
+        }
+
+        // صيغة مكان التذكرة بناءً على رقم الغرفة
+        let ticketLocation = `غرفة رقم ${room}`;
+
+        // قراءة id المهندس المختار بأمان من القائمة المنسدلة
+        let assignedEngineerId = null;
+        let engineerSelectElement = document.getElementById("engineerSelect");
+        assignedEngineerId = engineerSelectElement ? engineerSelectElement.value : null;
+
+        if (!assignedEngineerId) {
+            alert("يرجى اختيار المهندس الفني المطلوب توجيه الأمر إليه أولاً!");
+            return;
+        }
+
+        // قراءة بيانات الآدمن بأمان من الجلسة (sessionStorage)
+        let currentAdmin = JSON.parse(sessionStorage.getItem("user")) || { id: null, faculty: "management" };
+
+        // تنفيذ الإدخال المباشر عبر fetch باستخدام رابط وتأمين الـ REST API الخاص بك
+        let response = await fetch(SUPABASE_URL + "tickets", {
+            method: "POST",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                location: ticketLocation,
+                created_by: currentAdmin.id,
+                faculty: currentAdmin.faculty || "management",
+                assigned_to: assignedEngineerId,
+                status: "in_progress" // التعيين المباشر "قيد التنفيذ" لمهندس محدد
+            })
+        });
+
+        if (!response.ok) {
+            alert("حدث خطأ أثناء إنشاء التذكرة، يرجى التحقق من الاتصال بقاعدة البيانات.");
+            return;
+        }
+
+        // تنظيف الحقول بأمان بعد النجاح
+        if (document.getElementById("description")) document.getElementById("description").value = "";
+        if (document.getElementById("roomNumber")) document.getElementById("roomNumber").value = "";
+
+        // إخفاء نموذج التذكرة وتعديل طريقة العرض
+        const ticketForm = document.getElementById("createTicketForm");
+        const createTicketBtn = document.getElementById("createTicketBtn");
+
+        if (ticketForm) {
+            ticketForm.classList.remove("active");
+            ticketForm.style.display = "none";
+        }
+        if (createTicketBtn) createTicketBtn.classList.remove("active");
+
+        // التحرك والانتقال الناعم إلى مكان التذاكر
+        const ticketsTable = document.querySelector(".tickets-table") || document.getElementById("openTickets");
+        if (ticketsTable) {
+            ticketsTable.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+        
+        alert("تم إرسال الأمر المباشر وبدء التنفيذ فوراً!");
+        
+        // تحديث الصفحة لظهور التذكرة مباشرة
+        window.location.reload();
+
+    } catch (ex) {
+        console.error("خطأ غير متوقع:", ex);
+    }
+}
+
+function goReports(){
+window.location.href="accountsreports.html"
+}
+function goReports2(){
+window.location.href="accountsevaluation_report.html"
+}
+loadEngineers()
+loadTickets()
+
+// منع القائمة المنسدلة عند الضغط بزر الفأرة الأيمن
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // منع اختصارات لوحة المفاتيح الخاصة بأدوات المطور
+    document.addEventListener('keydown', function(e) {
+        // منع F12
+        if (e.key === "F12") {
+            e.preventDefault();
+        }
+        // منع Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+        }
+        // منع Ctrl+U (عرض مصدر الصفحة)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+        }
+    });
+    setInterval(function() {
+        const startTime = performance.now();
+        debugger; // يوقف تنفيذ الكود إذا كانت أدوات المطور مفتوحة
+        const endTime = performance.now();
+        if (endTime - startTime > 100) {
+            // إذا اكتشف فتح F12، يتم توجيه المستخدم أو إعادة تحميل الصفحة
+            window.location.reload();
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>

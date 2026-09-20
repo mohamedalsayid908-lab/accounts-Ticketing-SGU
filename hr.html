@@ -1,0 +1,4034 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Employee Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =======================================================
+====================== ROOT START ========================
+======================================================= */
+:root{
+
+    --primary:#071739;
+    --secondary:#b7c0cc;
+    --gold:#ffd369;
+
+    --white:#ffffff;
+
+    --glass:rgba(255,255,255,0.08);
+    --glass-border:rgba(255,255,255,0.10);
+
+    --shadow:
+    0 10px 35px rgba(0,0,0,0.25);
+
+}
+/* =======================================================
+======================= ROOT END =========================
+======================================================= */
+
+
+/* =======================================================
+====================== GLOBAL START ======================
+======================================================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Cairo',sans-serif;
+
+    background:
+    radial-gradient(circle at top left,#123d91 0%,transparent 25%),
+    radial-gradient(circle at bottom right,#0f3460 0%,transparent 30%),
+    linear-gradient(135deg,#020814,#071739,#0f3460);
+
+    color:white;
+
+    overflow-x:hidden;
+
+    min-height:100vh;
+
+    position:relative;
+
+    padding-top:95px;
+
+    direction:rtl;
+}
+
+/* خلفيات احترافية متحركة */
+body::before{
+    content:"";
+    position:fixed;
+
+    width:500px;
+    height:500px;
+
+    background:rgba(255,211,105,0.08);
+
+    border-radius:50%;
+
+    top:-150px;
+    left:-150px;
+
+    filter:blur(120px);
+
+    z-index:-1;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+
+    width:450px;
+    height:450px;
+
+    background:rgba(15,52,96,0.40);
+
+    border-radius:50%;
+
+    bottom:-150px;
+    right:-150px;
+
+    filter:blur(120px);
+
+    z-index:-1;
+}
+/* =======================================================
+======================= GLOBAL END =======================
+======================================================= */
+
+
+/* =======================================================
+====================== MAIN HEADER START =================
+======================================================= */
+/* =======================================================
+======================= HEADER ===========================
+======================================================= */
+/* =======================================================
+======================= MAIN HEADER ======================
+======================================================= */
+.main-header {
+    width: 100%;
+    min-height: 85px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 999;
+    direction: rtl;
+    padding: 12px 5%;
+    box-sizing: border-box;
+}
+
+/* حاوية المحتوى الأصلي للهيدر */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* جعل اللوجو دائري */
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+/* تنسيق Container النصوص في المنتصف */
+.brand-container {
+    text-align: center;
+}
+
+.brand-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(to right, #fff, #ffd369);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+    font-size: 14px;
+    color: #d9d9d9;
+    margin: 3px 0 0 0;
+    font-weight: 400;
+}
+
+/* زر تسجيل الخروج البيضاوي */
+.about-link {
+    color: white;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.08);
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.about-link:hover {
+    background: #ffd369;
+    color: #071739;
+}
+
+/* زر الشرطات الثلاث (مخفي افتراضياً في الشاشات الكبيرة) */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 32px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1000;
+}
+
+.hamburger-btn span {
+    width: 100%;
+    height: 3px;
+    background-color: #ffd369;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+/* تحويل الشرطات إلى X عند الفتح */
+.hamburger-btn.active span:nth-child(1) {
+    transform: translateY(9.5px) rotate(45deg);
+}
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger-btn.active span:nth-child(3) {
+    transform: translateY(-9.5px) rotate(-45deg);
+}
+
+/* =======================================================
+========= Responsive Design (الشاشات الصغيرة - الجوال) =======
+======================================================= */
+@media (max-width: 768px) {
+    .main-header {
+        min-height: 60px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    /* إظهار زر الشرطات الثلاث */
+    .hamburger-btn {
+        display: flex;
+    }
+
+    /* تحويل محتوى الهيدر إلى قائمة منسدلة مغلقة افتراضياً */
+    .header-content {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.95); /* خلفية داكنة تحجب المحتوى فقط أثناء الفتح */
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        
+        flex-direction: column;
+        gap: 15px;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+    }
+
+    /* إظهار المحتوى بنعومة عند الضغط على زر القائمة */
+    .header-content.active {
+        max-height: 300px;
+        opacity: 1;
+        padding: 20px;
+    }
+}
+
+/* =======================================================
+====================== PAGE HEADER START =================
+======================================================= */
+
+header{
+
+    position:relative;
+
+    margin-top:25px;
+
+    margin-right:auto;
+    margin-left:auto;
+
+    width:calc(100% - 60px);
+
+    min-height:90px;
+
+    padding:22px 28px;
+
+    border-radius:30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+
+    backdrop-filter:blur(18px);
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.25);
+}
+
+header h1{
+
+    font-size:32px;
+    font-weight:800;
+}
+
+header p{
+
+    color:rgba(255,255,255,0.65);
+
+    margin-top:6px;
+}
+/* =======================================================
+======================= PAGE HEADER END ==================
+======================================================= */
+
+
+/* =======================================================
+====================== CONTAINER START ===================
+======================================================= */
+.container{
+
+    width:100%;
+
+    max-width:1500px;
+
+    margin:auto;
+
+    padding:
+    40px
+    30px
+    120px;
+}
+/* =======================================================
+======================= CONTAINER END ====================
+======================================================= */
+
+
+/* =======================================================
+====================== SECTION START =====================
+======================================================= */
+.section{
+
+    margin-top:45px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* شكل عظمة احترافي للعناوين */
+.section h3{
+
+    position:relative;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:
+    18px
+    38px;
+
+    min-width:320px;
+
+    max-width:100%;
+
+    border-radius:999px;
+
+    font-size:22px;
+    font-weight:800;
+
+    color:white;
+
+    text-align:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.18),
+        rgba(255,255,255,0.08)
+    );
+
+    border:
+    1px solid rgba(255,211,105,0.28);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 12px 35px rgba(0,0,0,0.22);
+
+    margin-bottom:30px;
+
+    overflow:hidden;
+}
+
+/* أطراف العظمة */
+.section h3::before,
+.section h3::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:28px;
+    height:28px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        circle,
+        #ffd369,
+        #ffb703
+    );
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    box-shadow:
+    0 0 15px rgba(255,211,105,0.5);
+}
+
+.section h3::before{
+    right:-10px;
+}
+
+.section h3::after{
+    left:-10px;
+}
+/* =======================================================
+======================= SECTION END ======================
+======================================================= */
+
+
+/* =======================================================
+====================== CARD START ========================
+======================================================= */
+.card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(18px);
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.04)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.10);
+
+    border-radius:28px;
+
+    padding:28px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.25);
+
+    transition:0.4s;
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:4px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        #ffb703,
+        transparent
+    );
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 20px 45px rgba(0,0,0,0.30);
+}
+/* =======================================================
+======================= CARD END =========================
+======================================================= */
+
+
+/* =======================================================
+====================== TICKET START ======================
+======================================================= */
+
+.section div[id$="Tickets"]{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:22px;
+
+    align-items:stretch;
+}
+
+.ticket{
+
+    position:relative;
+
+    min-height:220px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+
+    backdrop-filter:blur(18px);
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.04)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.10);
+
+    border-radius:30px;
+
+    padding:24px;
+
+    overflow:hidden;
+
+    transition:0.45s;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.22);
+}
+
+.ticket::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:100%;
+    height:5px;
+
+    background:
+    linear-gradient(
+        to left,
+        #ffd369,
+        #ffb703,
+        transparent
+    );
+}
+
+.ticket:hover{
+
+    transform:
+    translateY(-8px)
+    scale(1.01);
+
+    box-shadow:
+    0 20px 45px rgba(0,0,0,0.35);
+}
+
+.ticket h3{
+
+    margin-bottom:12px;
+
+    font-size:22px;
+}
+
+.ticket p{
+
+    color:rgba(255,255,255,0.78);
+
+    line-height:2;
+}
+/* =======================================================
+======================= TICKET END =======================
+======================================================= */
+
+
+/* =======================================================
+====================== INPUTS START ======================
+======================================================= */
+input,
+textarea,
+select{
+
+    width:100%;
+
+    padding:16px;
+
+    margin-top:10px;
+    margin-bottom:18px;
+
+    border:none;
+    outline:none;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:15px;
+
+    font-family:'Cairo',sans-serif;
+
+    text-align:right;
+
+    transition:0.35s;
+}
+
+textarea{
+    resize:none;
+    min-height:130px;
+}
+
+input::placeholder,
+textarea::placeholder{
+
+    color:rgba(255,255,255,0.45);
+}
+
+select{
+    color:white;
+}
+
+option{
+    color:black;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    transform:scale(1.01);
+
+    border:
+    1px solid rgba(255,211,105,0.45);
+
+    box-shadow:
+    0 0 18px rgba(255,211,105,0.18);
+}
+/* =======================================================
+======================= INPUTS END =======================
+======================================================= */
+
+
+/* =======================================================
+====================== BUTTONS START =====================
+======================================================= */
+button{
+
+    border:none;
+
+    cursor:pointer;
+
+    transition:0.35s;
+
+    font-weight:700;
+
+    font-family:'Cairo',sans-serif;
+}
+
+.btn-create{
+
+    width:100%;
+
+    margin-top:10px;
+
+    padding:15px 28px;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffd369,
+        #ffb703
+    );
+
+    color:#071739;
+
+    font-size:16px;
+}
+
+.btn-create:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 10px 25px rgba(255,211,105,0.30);
+}
+/* =======================================================
+======================= BUTTONS END ======================
+======================================================= */
+
+
+/* =======================================================
+====================== FOOTER START ======================
+======================================================= */
+.main-footer{
+
+    margin-top:60px;
+
+    width:100%;
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    backdrop-filter:blur(15px);
+
+    background:rgba(255,255,255,0.04);
+
+    border-top:
+    1px solid rgba(255,255,255,0.08);
+}
+
+.social{
+    margin-bottom:16px;
+}
+
+.social a{
+
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+
+    width:45px;
+    height:45px;
+
+    margin:6px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:0.4s;
+}
+
+.social a:hover{
+
+    transform:translateY(-6px);
+
+    background:#ffd369;
+
+    color:#071739;
+
+    box-shadow:
+    0 8px 20px rgba(255,211,105,0.35);
+}
+
+.footer-text{
+
+    color:rgba(255,255,255,0.7);
+
+    font-size:14px;
+}
+/* =======================================================
+======================= FOOTER END =======================
+======================================================= */
+
+
+/* =======================================================
+====================== RESPONSIVE START ==================
+======================================================= */
+@media(max-width:992px){
+
+    header{
+
+        margin-top:20px;
+    }
+
+    header h1{
+
+        font-size:26px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    body{
+        padding-top:140px;
+    }
+
+    .main-header{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        padding:18px;
+    }
+
+    .brand{
+
+        font-size:23px;
+    }
+
+    .about-link{
+
+        width:100%;
+
+        text-align:center;
+    }
+
+    header{
+
+        width:calc(100% - 30px);
+
+        margin-top:20px;
+
+        padding:20px;
+    }
+
+    .container{
+
+        padding:
+        25px
+        15px
+        100px;
+    }
+
+    .section h3{
+
+        width:100%;
+
+        min-width:auto;
+
+        font-size:18px;
+
+        padding:16px 22px;
+    }
+
+    .section div[id$="Tickets"]{
+
+        grid-template-columns:1fr;
+    }
+
+    .card{
+
+        padding:22px;
+    }
+
+    .ticket{
+
+        min-height:auto;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .logo{
+        height:48px;
+    }
+
+    header h1{
+
+        font-size:22px;
+    }
+
+    .ticket h3{
+
+        font-size:19px;
+    }
+
+    input,
+    textarea,
+    select{
+
+        padding:14px;
+    }
+
+    .btn-create{
+
+        width:100%;
+    }
+
+}
+/* =======================================================
+======================= RESPONSIVE END ===================
+======================================================= */
+/* =======================================================
+====================== TICKET DETAILS ====================
+======================================================= */
+
+.ticket{
+
+    direction:rtl;
+
+    text-align:right;
+}
+
+/* رأس التيكت */
+.ticket-top{
+
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:20px;
+
+    flex-wrap:wrap;
+}
+
+/* عنوان التيكت */
+.ticket-title{
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#ffffff;
+
+    line-height:1.7;
+}
+
+/* حالة التيكت */
+.ticket-status{
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    backdrop-filter:blur(10px);
+
+    border:
+    1px solid rgba(255,255,255,0.15);
+
+    box-shadow:
+    0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* مفتوحة */
+.status-open{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(0,255,170,0.18),
+        rgba(0,255,170,0.08)
+    );
+
+    color:#7dffd3;
+}
+
+/* مغلقة */
+.status-closed{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,80,80,0.18),
+        rgba(255,80,80,0.08)
+    );
+
+    color:#ffb0b0;
+}
+
+/* جاري العمل */
+.status-progress{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.20),
+        rgba(255,211,105,0.08)
+    );
+
+    color:#ffe08a;
+}
+
+/* تم الحل */
+.status-resolved{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(80,180,255,0.20),
+        rgba(80,180,255,0.08)
+    );
+
+    color:#9fd6ff;
+}
+
+/* جسم التيكت */
+.ticket-body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+}
+
+/* كل سطر بيانات */
+.ticket-item{
+
+    background:
+    rgba(255,255,255,0.05);
+
+    border:
+    1px solid rgba(255,255,255,0.06);
+
+    border-radius:18px;
+
+    padding:16px 18px;
+
+    line-height:2;
+}
+
+/* العنوان */
+.ticket-item .label,
+.ticket-solution .label{
+
+    font-weight:800;
+
+    color:#ffd369;
+
+    margin-left:8px;
+}
+
+/* القيمة */
+.ticket-item .value{
+
+    color:rgba(255,255,255,0.85);
+}
+
+/* صندوق الحل */
+.ticket-solution{
+
+    margin-top:8px;
+
+    padding:20px;
+
+    border-radius:22px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.10),
+        rgba(255,255,255,0.04)
+    );
+
+    border:
+    1px solid rgba(255,211,105,0.18);
+}
+
+/* نص الحل */
+.solution-text{
+
+    margin-top:12px;
+
+    line-height:2.1;
+
+    color:rgba(255,255,255,0.88);
+}
+
+/* التقييم */
+.ticket-rating{
+
+    width:fit-content;
+
+    padding:12px 18px;
+
+    border-radius:50px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    font-weight:700;
+
+    margin-top:10px;
+}
+
+/* أزرار التحكم */
+.ticket-actions{
+
+    margin-top:28px;
+
+    display:flex;
+
+    justify-content:flex-end;
+}
+
+/* select */
+.ticket-actions select{
+
+    min-width:220px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.04)
+    );
+
+    color:white;
+
+    border-radius:18px;
+
+    border:
+    1px solid rgba(255,255,255,0.10);
+
+    padding:14px 18px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    transition:0.35s;
+}
+
+.ticket-actions select:hover{
+
+    transform:translateY(-2px);
+
+    border:
+    1px solid rgba(255,211,105,0.30);
+}
+
+.ticket-actions option{
+
+    color:black;
+}
+
+/* =======================================================
+====================== RESPONSIVE ========================
+======================================================= */
+
+@media(max-width:768px){
+
+    .ticket-top{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .ticket-title{
+
+        font-size:21px;
+    }
+
+    .ticket-actions{
+
+        justify-content:center;
+    }
+
+    .ticket-actions select{
+
+        width:75%;
+    }
+
+}
+
+/* =======================================================
+====================== WELCOME BOX =======================
+======================================================= */
+
+.welcome-box{
+
+    position:relative;
+
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+
+    padding:10px 15px;
+
+    min-width:100px;
+
+    border-radius:24px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,211,105,0.15),
+        rgba(255,255,255,0.05)
+    );
+
+    border:
+    1px solid rgba(255,211,105,0.20);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 12px 35px rgba(0,0,0,0.20);
+}
+
+/* إضاءة */
+.welcome-glow{
+
+    position:absolute;
+
+    width:60px;
+    height:60px;
+
+    background:
+    rgba(255,211,105,0.15);
+
+    border-radius:20%;
+
+    top:-40px;
+    left:-40px;
+
+    filter:blur(25px);
+}
+
+/* المحتوى */
+.welcome-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+/* النص */
+.welcome-title{
+
+    font-size:9px;
+
+    color:rgba(255,255,255,0.70);
+
+    margin-bottom:0px;
+}
+
+.welcome-name{
+
+    font-size:9px;
+
+    font-weight:800;
+
+    color:#ffffff;
+}
+
+/* =======================================================
+====================== PROFILE CARD ======================
+======================================================= */
+/* الحاوية الرئيسية للأزرار والبيانات */
+.profile-section-container {
+    margin-top: 10px;
+    width: 100%;
+}
+/* توحيد سلوك وحجم الأزرار الثلاثة داخل الشريط */
+.actions-header-bar {
+    display: flex;
+    flex-direction: row;          /* ترتيب أفقي */
+    flex-wrap: nowrap;             /* إجبار الأزرار على عدم النزول لسطر جديد */
+    justify-content: space-between; /* توزيع المساحة والمسافات بالتساوي */
+    align-items: center;
+    gap: 12px;                     /* مسافة ثابتة ومتناسقة بين الأزرار */
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+/* توحيد الخصائص الأفقية لكافة الأزرار */
+.actions-header-bar > button {
+    flex: 1 1 0;                   /* إعطاء مساحة أفقية متساوية تماماً لجميع الأزرار */
+    min-width: 0;                  /* منع التمدد المفاجئ وبقاء الأزرار جنب بعض */
+    height: 56px;                  /* ارتفاع أفقي مناسب وموحد */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    white-space: nowrap;           /* منع انقسام النص داخل الزر */
+}
+
+/* --- 1. زر بيانات المستخدم --- */
+.profile-toggle-btn {
+    justify-content: space-between !important;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 211, 105, 0.2);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.profile-toggle-btn:hover {
+    background: rgba(255, 211, 105, 0.1);
+    border-color: rgba(255, 211, 105, 0.4);
+}
+
+.btn-main-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.profile-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    background: linear-gradient(135deg, rgba(255, 211, 105, 0.18), rgba(255, 255, 255, 0.06));
+    border: 1px solid rgba(255, 211, 105, 0.18);
+}
+
+.profile-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* --- 2. زر إنشاء تذكرة --- */
+.create-ticket-btn {
+    gap: 8px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #ffd369, #e6b800);
+    border: none;
+    border-radius: 16px;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 211, 105, 0.2);
+}
+
+.create-ticket-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 211, 105, 0.35);
+    background: linear-gradient(135deg, #ffe082, #ffd369);
+}
+.ticket-icon {
+    font-size: 20px;
+}
+
+
+/* --- شبكة البيانات وتنسيقاتك الأصلية --- */
+.profile-card {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, margin-top 0.3s ease;
+}
+
+/* عند الفتح يظهر الكارت وبينه وبين الزر هامش بسيط */
+.profile-card.active {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 18px;
+    transition: max-height 0.6s cubic-bezier(1, 0, 1, 0), opacity 0.4s ease, margin-top 0.3s ease;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+/* عنصر البيانات */
+.profile-item {
+    position: relative;
+    overflow: hidden;
+    padding: 18px;
+    border-radius: 22px;
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.03)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: 0.35s;
+}
+
+/* خط علوي ملون */
+.profile-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+        to left,
+        #ffd369,
+        transparent
+    );
+}
+
+.profile-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
+}
+
+/* اسم الحقل والقيمة */
+.profile-label {
+    font-size: 14px;
+    color: #ffd369;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.profile-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.8;
+}
+/* =======================================================
+====================== MOBILE ============================
+======================================================= */
+
+@media(max-width:768px){
+
+    .welcome-box{
+
+        width:100%;
+
+        min-width:auto;
+    }
+
+    .welcome-name{
+
+        font-size:10px;
+    }
+
+    .profile-title{
+
+        font-size:10px;
+    }
+
+    .profile-grid{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*==================================================
+                TOOLBAR
+==================================================*/
+
+.tickets-toolbar{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+gap:20px;
+flex-wrap:wrap;
+
+}
+
+.tickets-toolbar h3{
+
+margin:0;
+font-size:26px;
+font-weight:700;
+color:#f7f8f8;
+
+}
+
+.tickets-toolbar select{
+
+padding:12px 18px;
+font-size:15px;
+font-weight:600;
+border-radius:8px;
+border:1px solid #cbd5e1;
+background:#fff;
+color:#1e293b;
+cursor:pointer;
+min-width:220px;
+
+}
+
+.tickets-toolbar select:focus{
+
+outline:none;
+border-color:#2563eb;
+box-shadow:0 0 0 4px rgba(37,99,235,.15);
+
+}
+
+
+/*==================================================
+                TABLE
+==================================================*/
+
+.tickets-table{
+
+width:100%;
+
+background:#fff;
+
+border-radius:15px;
+
+overflow:hidden;
+
+border:1px solid #dbe2ea;
+
+box-shadow:0 8px 30px rgba(0,0,0,.08);
+
+}
+
+
+/*==================================================
+                HEADER
+==================================================*/
+
+.tickets-head{
+
+display:grid;
+
+grid-template-columns:
+
+70px
+4fr
+2fr
+1.5fr
+220px;
+
+align-items:center;
+
+background:#0f4c81;
+
+color:#fff;
+
+font-size:16px;
+
+font-weight:bold;
+
+padding:18px;
+
+}
+
+.tickets-head>div{
+
+padding:0 15px;
+
+text-align:center;
+
+}
+
+.tickets-head>div:not(:last-child){
+
+border-left:1px solid rgba(255,255,255,.2);
+
+}
+
+
+/*==================================================
+                ROW
+==================================================*/
+
+.ticket-row{
+
+border-top:1px solid #edf2f7;
+
+background:#fff;
+
+}
+
+.ticket-row:nth-child(even){
+
+background:#fbfcfe;
+
+}
+
+.ticket-summary{
+
+display:grid;
+
+grid-template-columns:
+
+70px
+4fr
+2fr
+1.5fr
+220px;
+
+align-items:center;
+
+padding:22px 18px;
+
+cursor:pointer;
+
+transition:.25s;
+
+color:#1e293b;
+
+}
+
+.ticket-summary:hover{
+
+background:#eef6ff;
+
+}
+
+.ticket-summary>div{
+
+padding:0 15px;
+
+font-size:15px;
+
+color:#1e293b;
+
+display:flex;
+
+align-items:center;
+
+min-height:45px;
+
+}
+
+.ticket-summary>div:not(:last-child){
+
+border-left:1px solid #e5e7eb;
+
+}
+
+
+/*==================================================
+                TITLE
+==================================================*/
+
+.ticket-title{
+
+font-size:17px;
+
+font-weight:700;
+
+color:#0f172a;
+
+line-height:1.7;
+
+}
+
+
+/*==================================================
+                ENGINEER
+==================================================*/
+
+.ticket-engineer{
+
+font-size:15px;
+
+font-weight:600;
+
+color:#475569;
+
+}
+.ticket-info{
+
+display:grid;
+
+grid-template-columns:180px 1fr;
+
+gap:15px;
+
+padding:14px 18px;
+
+margin-bottom:12px;
+
+background:#f8fafc;
+
+border:1px solid #dbe2ea;
+
+border-radius:8px;
+
+align-items:center;
+
+}
+
+/*==================================================
+                DETAILS
+==================================================*/
+
+.ticket-details{
+
+display:none;
+
+padding:25px 30px;
+
+background:#ffffff;
+
+border-top:2px solid #2563eb;
+
+border-bottom:2px solid #2563eb;
+
+border-right:2px solid #2563eb;
+
+border-left:2px solid #2563eb;
+
+box-shadow:0 5px 18px rgba(0,0,0,.12);
+
+margin:10px;
+
+border-radius:10px;
+
+line-height:2.2;
+
+color:#1e293b;
+
+animation:fadeIn .25s;
+
+}
+
+.ticket-details.show{
+
+display:block;
+
+animation:fadeIn .25s;
+
+}
+
+.ticket-details p{
+
+margin:15px 0;
+
+}
+
+.ticket-details strong{
+
+display:block;
+
+margin-bottom:5px;
+
+color:#0f4c81;
+
+font-size:15px;
+
+}
+.ticket-label{
+
+font-weight:bold;
+
+color:#0f4c81;
+
+font-size:15px;
+
+}
+.ticket-value{
+
+font-size:15px;
+
+color:#1e293b;
+
+line-height:1.8;
+
+word-break:break-word;
+
+}
+.ticket-solution{
+
+background:#eef7ff;
+
+border-right:5px solid #2563eb;
+
+padding:18px;
+
+border-radius:8px;
+
+margin-top:18px;
+
+}
+.ticket-rating{
+
+margin-top:20px;
+
+padding:15px;
+
+background:#fff8e6;
+
+border:1px solid #ffd54f;
+
+border-radius:8px;
+
+font-size:16px;
+
+font-weight:bold;
+
+color:#c27b00;
+
+}
+
+/*==================================================
+                STATUS
+==================================================*/
+
+.status-badge{
+
+display:inline-flex;
+
+justify-content:center;
+
+align-items:center;
+
+min-width:120px;
+
+padding:9px 16px;
+
+border-radius:30px;
+
+font-size:14px;
+
+font-weight:bold;
+
+color:#fff;
+
+}
+
+.status-open{
+
+background:#2196F3;
+
+}
+
+.status-progress{
+
+background:#F59E0B;
+
+}
+
+.status-resolved{
+
+background:#10B981;
+
+}
+
+.status-closed{
+
+background:#64748B;
+
+}
+
+
+/*==================================================
+                SELECT
+==================================================*/
+
+.ticket-summary select{
+
+width:100%;
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px solid #cbd5e1;
+
+background:#fff;
+
+color:#1e293b;
+
+font-size:14px;
+
+cursor:pointer;
+
+}
+
+.ticket-summary select:focus{
+
+outline:none;
+
+border-color:#2563eb;
+
+}
+
+
+/*==================================================
+                ARROW
+==================================================*/
+
+.arrow{
+
+font-size:22px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+justify-content:center;
+
+transition:.3s;
+
+}
+
+.arrow.open{
+
+transform:rotate(180deg);
+
+}
+
+
+/*==================================================
+                ANIMATION
+==================================================*/
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(-8px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+.ticket-summary{
+
+background:#f3f6fa;
+
+transition:.25s;
+
+}
+
+.ticket-summary:hover{
+
+background:#dde9f7;
+
+}
+
+.ticket-summary.active{
+
+background:linear-gradient(to left,#dbeafe,#bfdbfe);
+
+border-right:6px solid #2563eb;
+
+box-shadow:
+
+0 4px 15px rgba(37,99,235,.15),
+
+inset 0 0 0 1px rgba(37,99,235,.25);
+
+}
+
+.location-box{
+
+width:100%;
+
+margin:10px 0;
+
+}
+
+#location{
+
+width:100%;
+
+padding:14px 16px;
+
+border:1px solid #cbd5e1;
+
+border-radius:10px;
+
+font-size:15px;
+
+background:#fff;
+
+color:#1e293b;
+
+transition:.3s;
+
+box-sizing:border-box;
+
+}
+
+#location:focus{
+
+outline:none;
+
+border-color:#2563eb;
+
+box-shadow:0 0 0 4px rgba(37,99,235,.15);
+
+}
+#location::placeholder{
+
+color:#6b7280;
+
+opacity:1;
+
+font-weight:500;
+
+}
+
+
+.location-box{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.location-box input{
+    height:42px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    padding:0 12px;
+    font-size:14px;
+}
+
+#locationCollege{
+    flex:3;
+}
+
+#roomNumber{
+    flex:1;
+}
+
+
+
+
+.new-ticket-alert{
+
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: #2563eb;
+    color: #fff;
+
+    padding: 14px 18px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+    animation: slideDown .35s ease;
+
+}
+
+.new-ticket-alert button{
+
+    border: none;
+    background: #fff;
+    color: #2563eb;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
+.new-ticket-alert button:hover{
+
+    background: #f3f4f6;
+
+}
+
+@keyframes slideDown{
+
+    from{
+
+        opacity: 0;
+        transform: translateY(-20px);
+
+    }
+
+    to{
+
+        opacity: 1;
+        transform: translateY(0);
+
+    }
+
+}
+
+
+/* --- 3. زر إعادة تعيين كلمة المرور --- */
+.edit-profile-btn {
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 211, 105, 0.3);
+    color: #ffd369;
+}
+
+
+
+
+
+/* تنسيق جدول العرض */
+.tickets-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #ffffff; /* خلفية الصفوف بيضاء */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* الهيدر: خلفية زرقاء ونصوص بيضاء */
+.tickets-table thead tr {
+    background-color: #0d6efd; /* لون أزرق */
+    color: #ffffff;            /* نص أبيض */
+    text-align: right;
+}
+
+.tickets-table th {
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff !important;  /* تأكيد اللون الأبيض للهيدر */
+}
+
+/* بيانات التذاكر: خلفية بيضاء ونصوص سوداء */
+.tickets-table td {
+    padding: 12px 16px;
+    color: #000000 !important; /* لون النصوص داخل الجدول بالأسود */
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+/* تمييز الصفوف عند التمرير */
+.tickets-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+.badge-warning { background-color: #fff3cd; color: #856404; }
+.badge-info { background-color: #d1ecf1; color: #0c5460; }
+.badge-danger { background-color: #f8d7da; color: #721c24; }
+.badge-success { background-color: #d4edda; color: #155724; }
+
+.btn-delete {
+    background-color: #dc3545;
+    color: rgb(5, 5, 5);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-delete:hover {
+    background-color: #bd2130;
+}
+
+
+
+
+
+
+/* أزرار الإجراءات الخاصة بالعميد */
+.btn-approve {
+    background-color: #198754;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 5px;
+    transition: 0.2s;
+}
+.btn-approve:hover { background-color: #146c43; }
+
+.btn-reject {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.btn-reject:hover { background-color: #b02a37; }
+
+
+/* إشعار التحديث اللحظي */
+.live-toast-notification {
+    position: fixed !important;
+    top: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background-color: #0d6efd !important; /* أزرق مميز */
+    color: #ffffff !important;
+    padding: 14px 24px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    z-index: 999999 !important; /* لضمان ظهوره فوق كل عناصر الصفحة */
+    font-size: 15px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    transition: transform 0.2s ease !important;
+    animation: toastSlideDown 0.4s ease-out !important;
+}
+
+.live-toast-notification:hover {
+    background-color: #0b5ed7 !important;
+    transform: translateX(-50%) scale(1.03) !important;
+}
+
+@keyframes toastSlideDown {
+    from { top: -60px; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+
+
+
+
+/* نموذج إنشاء التذكرة - منكمش ومخفي افتراضياً */
+.create-ticket-form-card {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, margin-top 0.3s ease;
+}
+
+/* عند الضغط على زر إنشاء تذكرة يتم إظهاره بنعومة */
+.create-ticket-form-card.active {
+    max-height: 1200px; /* ارتفاع كافٍ لاستيعاب جميع حقول النموذج */
+    opacity: 1;
+    margin-top: 20px;
+    transition: max-height 0.6s cubic-bezier(1, 0, 1, 0), opacity 0.4s ease, margin-top 0.3s ease;
+}
+
+/* تنسيق زر إنشاء تذكرة العلوي عند تفعيله */
+.create-ticket-btn.active {
+    background: linear-gradient(135deg, #e6b800, #cca300);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* تنسيق زر طلباتي القديمة / الأرشيف */
+.btn-archive {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* تأثير التمرير (Hover) */
+.btn-archive:hover {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+    transform: translateY(-1px);
+}
+
+/* تأثير الضغط (Active) */
+.btn-archive:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="main-header">
+<!-- زر الشرطات الثلاث (يظهر فقط في الشاشات الصغيرة) -->
+    <button class="hamburger-btn" onclick="toggleHeaderMenu(this)" type="button" aria-label="القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="header-content" id="headerMenu">
+    <!-- اللوجو على اليمين -->
+    <img src="photo/logo.png" class="logo" alt="Logo">
+
+    <!-- العنوان في المنتصف -->
+    <div class="brand-container">
+        <h1 class="brand-title">EL saleheya EL Gadida Universty</h1>
+        <p class="brand-subtitle">Ticketing system</p>
+    </div>
+<div id="welcome"></div>
+    <!-- زر تسجيل الخروج على اليسار -->
+    <button class="about-link" id="logoutBtn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+</header>
+<div class="container">
+
+    <div class="card">
+        <div id="profile"></div>
+    </div>
+
+<div class="card">
+<!-- نموذج إنشاء التذكرة (يكون مخفياً افتراضياً) -->
+<div class="create-ticket-form-card" id="createTicketForm">
+
+    <h3>إنشاء تذكرة جديدة</h3>
+
+    <div class="assigned-engineer-box">
+        <span class="label-text">الموظف المعني: </span>
+        <span id="assignedEngineerName">جاري الاختيار...</span>
+        <input type="hidden" id="engineerSelect">
+    </div>
+
+    <!-- حقل العنوان يدعم الاختيار من قائمة أو الكتابة المباشرة -->
+    <input id="title" list="predefinedTitles" placeholder="اختر عنواناً أو اكتبه مباشرة..." autocomplete="off">
+    <datalist id="predefinedTitles">
+        <!-- سيتم ملء العناوين تلقائياً عبر JavaScript من جدول predefined_titles -->
+    </datalist>
+
+    <textarea id="description" placeholder="الوصف "></textarea>
+
+    <div class="location-box">
+        <input id="roomNumber" type="text" placeholder="رقم الغرفة">
+    </div>
+
+    <button class="btn-create" onclick="createTicket()">
+        إنشاء تذكرة
+    </button>
+
+</div>
+
+</div>
+
+<div id="newTicketAlert" class="new-ticket-alert" style="display:none;">
+
+    <span>🔔 يوجد تحديث جديد على أحد طلباتك</span>
+
+    <button onclick="reloadTickets()">
+        عرض التحديث
+    </button>
+
+</div>
+
+<!-- مخفي افتراضياً ولن يظهر مطلقاً إلا لمن وظيفته تحتوي كلمة "عميد" -->
+<div class="card dean-tickets-card" id="deanApprovalSection" style="display: none;">
+    <h3>طلبات الاعتماد الخاصّة بالكلية (اعتماد العميد)</h3>
+    
+    <div class="table-responsive">
+        <table class="tickets-table">
+            <thead>
+                <tr>
+                    <th>مقدم الطلب</th>
+                    <th>عنوان الطلب</th>
+                    <th>الوصف</th>
+                    <th>المكان</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="deanTicketsTableBody">
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #000;">جاري تحميل طلبات الكلية...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    
+    <div class="section">
+<div class="tickets-toolbar">
+        <select id="statusFilter" onchange="loadTickets()">
+
+            <option value="all">كل الحالات</option>
+
+            <option value="open">المفتوحة</option>
+
+            <option value="in_progress">جاري العمل عليها</option>
+
+            <option value="resolved">تم الرد عليها</option>
+
+            <option value="closed">المغلقة</option>
+
+        </select>
+
+    </div>
+<!-- قسم تذاكر الاعتماد -->
+<div class="card my-approval-tickets-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>'طلبات ' الاعتماد الخاصّة بي</h3>
+        <!-- زر التبديل بين الطلبات الحالية والأرشيف -->
+        <button id="toggleArchiveBtn" class="btn-archive" onclick="toggleArchiveView()">
+    📁 طلباتي القديمة (المعتمدة)
+        </button>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="tickets-table">
+            <thead>
+                <tr>
+                    <th>العنوان</th>
+                    <th>الوصف</th>
+                    <th>المكان</th>
+                    <th>العميد المعتمد</th>
+                    <th>الحالة</th>
+                    <th>رد شؤون العاملين</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="approvalTicketsTableBody">
+                <tr>
+                    <td colspan="7" style="text-align: center;">جاري تحميل تذاكر الاعتماد...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <div class="tickets-table">
+
+        <div class="tickets-head">
+
+            <div></div>
+
+            <div>عنوان التذكرة</div>
+
+            <div>  موظف شؤون العاملين </div>
+
+            <div>الحالة</div>
+
+            <div>تغيير الحالة</div>
+
+        </div>
+
+        <div id="ticketsTable"></div>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- =======================================================
+====================== FOOTER START =======================
+======================================================= -->
+<footer class="main-footer">
+
+    <div class="social">
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">D</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">E</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">M</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">A</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">H</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">O</a>
+        <a href="https://www.facebook.com/share/18NjzVPKGe/">M</a>
+    </div>
+
+    <div class="footer-text">
+        جميع الحقوق محفوظة © M.H.D
+    </div>
+
+</footer>
+<!-- =======================================================
+======================= FOOTER END ========================
+======================================================= -->
+<script>
+
+const SUPABASE_URL="https://cqmhpvaaaduqbhjtyrgk.supabase.co"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxbWhwdmFhYWR1cWJoanR5cmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTA3OTUsImV4cCI6MjA5NDE4Njc5NX0.eqZ69jTSRFvPhjSVx2KZe9-3LSw0cw8uAQ6D06ZkQFg"
+
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+)
+
+let user = JSON.parse(sessionStorage.getItem("user"));
+
+if (!user || user.role !== "employee") {
+
+    logout();
+
+}
+function logout() {
+
+    sessionStorage.clear();
+
+    window.location.replace("index.html");
+
+}
+
+let lastUpdateTime = null;
+
+async function autoRefresh() {
+
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("tickets")
+            .select("updated_at")
+            .eq("created_by", user.id)
+            .order("updated_at", { ascending: false })
+            .limit(1);
+
+        if (error || !data || data.length === 0)
+            return;
+
+        const newest = data[0].updated_at;
+
+        // أول مرة
+        if (lastUpdateTime === null) {
+
+            lastUpdateTime = newest;
+            return;
+
+        }
+
+        // لا يوجد تحديث
+        if (newest === lastUpdateTime)
+            return;
+
+        // يوجد تحديث
+        lastUpdateTime = newest;
+
+        document.getElementById("newTicketAlert").style.display = "flex";
+
+    }
+
+    catch (ex) {
+
+        console.error(ex);
+
+    }
+
+}
+
+setInterval(autoRefresh, 10000);
+
+async function reloadTickets() {
+
+    document.getElementById("newTicketAlert").style.display = "none";
+
+    await loadTickets();
+
+}
+
+
+function toggleTicketForm(btnElement) {
+    btnElement.classList.toggle('active');
+    const ticketForm = document.getElementById('createTicketForm');
+    ticketForm.classList.toggle('active');
+}
+
+
+document.getElementById("welcome").innerHTML =
+
+`
+<div class="welcome-box">
+
+    <div class="welcome-glow"></div>
+
+    <div class="welcome-content">
+
+        <div class="welcome-title">
+            أهلاً بك
+        </div>
+
+        <div class="welcome-name">
+            ${user.name}
+        </div>
+
+    </div>
+
+</div>
+`
+
+function toggleProfileData(btnElement) {
+    // إتاحة التناوب لزر البيانات وللكارت الخاص بالبيانات
+    btnElement.classList.toggle('active');
+    
+    const profileCard = document.getElementById('profileCard');
+    profileCard.classList.toggle('active');
+}
+document.getElementById("profile").innerHTML =
+
+`<div class="profile-section-container">
+
+    <!-- شريط الأزرار الرئيسي -->
+    <div class="actions-header-bar">
+        
+        <!-- زر بيانات المستخدم -->
+        <button class="profile-toggle-btn" onclick="toggleProfileData(this)" type="button">
+            <div class="btn-main-content">
+                <div class="profile-icon">👤</div>
+                <span class="profile-title">بيانات المستخدم</span>
+            </div>
+            <span class="toggle-arrow">❮</span>
+        </button>
+
+        <!-- زر إنشاء تذكرة -->
+        <button class="create-ticket-btn" id="createTicketBtn" onclick="toggleTicketForm(this)" type="button">
+            <div class="ticket-icon">🎫</div>
+            <span>إنشاء تذكرة</span>
+        </button>
+
+        <!-- زر إعادة تعيين كلمة المرور -->
+        <button class="edit-profile-btn" onclick="location.href='edituser.html'" type="button">
+            <span class="key-icon">🔑</span>
+            <span>إعادة تعيين كلمة المرور</span>
+        </button>
+
+    </div>
+
+    <!-- بطاقة البيانات -->
+    <div class="profile-card" id="profileCard">
+        <div class="profile-grid">
+            <div class="profile-item">
+                <div class="profile-label">الاسم</div>
+                <div class="profile-value">${user.name}</div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">رقم الهاتف</div>
+                <div class="profile-value">${user.phone}</div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">الوظيفة</div>
+                <div class="profile-value">${user.job_title}</div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">الكلية</div>
+                <div class="profile-value">${user.faculty}</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+`
+
+
+let usersMap={}
+
+async function loadUsers(){
+
+let {data} = await supabaseClient
+.from("users")
+.select("id,name")
+
+data.forEach(u=>{
+usersMap[u.id]=u.name
+})
+
+}
+
+let engineers = [];
+
+async function loadEngineer() {
+
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("id,name")
+        .eq("role", "hr")
+        .order("name");
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    engineers = data || [];
+
+    const engineerNameElement = document.getElementById("assignedEngineerName");
+const engineerInputHidden = document.getElementById("engineerSelect");
+
+if (engineers && engineers.length > 0) {
+    // اختيار موظف عشوائي
+    const randomIndex = Math.floor(Math.random() * engineers.length);
+    const randomEngineer = engineers[randomIndex];
+
+    // عرض اسم الموظف المختار كـ نص فقط
+    engineerNameElement.textContent = randomEngineer.name;
+
+    // حفظ id الموظف في الـ input الخفي للربط مع النموذج (Form)
+    if (engineerInputHidden) {
+        engineerInputHidden.value = randomEngineer.id;
+    }
+} else {
+    engineerNameElement.textContent = "لا يوجد موظفين متاحين";
+}
+}
+
+// =======================================================
+// 1. دالة تحميل العناوين المحددة مسبقاً في الـ Datalist
+// =======================================================
+// =======================================================
+// تحميل العناوين المحددة مسبقاً في الـ Datalist
+// =======================================================
+async function loadPredefinedTitles() {
+    try {
+        console.log("جاري جلب العناوين المحددة مسبقاً...");
+        
+        // جلب البيانات من Supabase
+        const { data: titles, error } = await supabaseClient
+            .from("predefined_titles")
+            .select("title");
+
+        if (error) {
+            console.error("خطأ من Supabase أثناء جلب العناوين:", error.message);
+            return;
+        }
+
+        console.log("العناوين المجلوبة من قاعدة البيانات:", titles);
+
+        const dataListElement = document.getElementById("predefinedTitles");
+
+        if (!dataListElement) {
+            console.error("لم يتم العثور على عنصر <datalist id='predefinedTitles'> في الصفحة!");
+            return;
+        }
+
+        if (titles && titles.length > 0) {
+            // مسح أي خيارات القديمة وتعبئة الخيارات الجديدة
+            dataListElement.innerHTML = "";
+            titles.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.title;
+                dataListElement.appendChild(option);
+            });
+            console.log("تمت تعبئة القائمة بنجاح بعدد عناوين:", titles.length);
+        } else {
+            console.warn("جدول predefined_titles فارغ في قاعدة البيانات!");
+        }
+
+    } catch (ex) {
+        console.error("خطأ عام في دالة تحميل العناوين:", ex);
+    }
+}
+
+// التأكد من التشغيل فور اكتمال تحميل عناصر HTML
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadPredefinedTitles);
+} else {
+    loadPredefinedTitles(); // إذا كانت الصفحة محملة بالفعل
+}
+// =======================================================
+// 2. دالة إنشاء التذكرة المعدلة (فحص التوجيه تلقائياً)
+// =======================================================
+async function createTicket() {
+    try {
+        let title = document.getElementById("title")?.value?.trim() || "";
+        let description = document.getElementById("description")?.value?.trim() || "";
+        let room = document.getElementById("roomNumber")?.value?.trim() || "";
+
+        if (!title || !description || !room) {
+            alert("يرجى تعبئة جميع الحقول المطلوبة (العنوان، الوصف، رقم الغرفة) قبل الإرسال!");
+            return;
+        }
+
+        let ticketLocation = `غرفة رقم ${room}`;
+        let engineerSelectElement = document.getElementById("engineerSelect");
+        let assignedEngineerId = engineerSelectElement ? engineerSelectElement.value : null;
+
+        // التحقق مما إذا كان العنوان المكتوب/المختار يتبع جدول العناوين المحددة مسبقاً
+        const { data: specialTitle } = await supabaseClient
+            .from("predefined_titles")
+            .select("title")
+            .eq("title", title)
+            .maybeSingle();
+
+        if (specialTitle) {
+            // ----------------------------------------------------
+            // البحث عن العميد الخاص بنفس كلية الموظف مُنشئ الطلب
+            // ----------------------------------------------------
+            const { data: deanUser, error: deanError } = await supabaseClient
+                .from("users")
+                .select("id, name")
+                .eq("faculty", user.faculty)
+                .ilike("job_title", "%عميد%") // يبحث عن الوظيفة التي تحتوي كلمة عميد
+                .maybeSingle();
+
+            let targetDeanId = deanUser ? deanUser.id : null;
+
+            // ----------------------------------------------------
+            // الحالة الأولية: الطلب يحتاج إلى اعتماد العميد وشؤون العاملين
+            // ----------------------------------------------------
+            const { error: approvalError } = await supabaseClient
+                .from("approval_tickets")
+                .insert({
+                    title: title,
+                    description: description,
+                    location: ticketLocation,
+                    created_by: user.id,
+                    faculty: user.faculty,
+                    dean_id: targetDeanId, // تم ربط العميد المعني فور إنشاء التذكرة
+                    status: 'pending_dean'
+                });
+
+            if (approvalError) {
+                alert("حدث خطأ أثناء إرسال طلب الاعتماد: " + approvalError.message);
+                return;
+            }
+
+            alert("تم إرسال الطلب بنجاح، وهو الآن بانتظار اعتماد عميد الكلية.");
+        } else {
+            // ----------------------------------------------------
+            // الحالة الثانية: تذكرة عادية تذهب لجدول tickets
+            // ----------------------------------------------------
+            const { error } = await supabaseClient
+                .from("tickets")
+                .insert({
+                    title: title,
+                    description: description,
+                    location: ticketLocation,
+                    created_by: user.id,
+                    faculty: user.faculty,
+                    assigned_to: assignedEngineerId
+                });
+
+            if (error) {
+                alert("حدث خطأ أثناء إنشاء التذكرة: " + error.message);
+                return;
+            }
+
+            alert("تم إنشاء التذكرة بنجاح.");
+        }
+
+        // تنظيف الحقول بعد النجاح
+    if (document.getElementById("title")) document.getElementById("title").value = "";
+    if (document.getElementById("description")) document.getElementById("description").value = "";
+    if (document.getElementById("roomNumber")) document.getElementById("roomNumber").value = "";
+
+    // 1. إخفاء كلاس نموذج التذكرة
+    const ticketForm = document.getElementById("createTicketForm");
+    const createTicketBtn = document.getElementById("createTicketBtn");
+
+    if (ticketForm) ticketForm.classList.remove("active");
+    if (createTicketBtn) createTicketBtn.classList.remove("active");
+
+    // 2. التحريك والانتقال الناعم إلى جدول التذاكر
+    const ticketsTable = document.querySelector(".tickets-table");
+    if (ticketsTable) {
+        ticketsTable.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+        window.location.reload();
+
+    } catch (ex) {
+        console.error("خطأ أثناء إنشاء التذكرة:", ex);
+    }
+}
+
+async function changeStatus(ticket, status) {
+    try {
+        if (!status) return;
+
+        // إذا كان الاختيار هو الحذف
+        if (status === "delete") {
+            const confirmDelete = confirm("هل أنت متأكد من أنك تريد حذف هذه التذكرة نهائياً؟");
+            if (!confirmDelete) return;
+
+            const { error: deleteError } = await supabaseClient
+                .from("tickets")
+                .delete()
+                .eq("id", ticket);
+
+            if (deleteError) {
+                console.error(deleteError);
+                alert(deleteError.message);
+                return;
+            }
+
+            await loadTickets();
+            return;
+        }
+
+        // إذا كان الاختيار إغلاق التذكرة (مع نافذة التقييم)
+        if (status === "closed") {
+            const options = {
+                "1": "0 - لم يتم الحل",
+                "1": "1 - حل غير جيد",
+                "2": "2 - حل متأخر",
+                "3": "3 - حل مناسب إلى حد ما",
+                "4": "4 - حل جيد جداً",
+                "5": "5 - حل ممتاز"
+            };
+
+            const selected = await new Promise((resolve) => {
+                const overlay = document.createElement("div");
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                `;
+
+                const box = document.createElement("div");
+                box.style.cssText = `
+                    background: #fff;
+                    color:#2563eb;
+                    padding: 20px;
+                    border-radius: 10px;
+                    width: 350px;
+                    text-align: center;
+                    font-family: Arial;
+                `;
+
+                box.innerHTML = `
+                    <h3 style="margin-bottom:15px;">تقييم الخدمة</h3>
+                    <select id="ratingSelect" style="width:100%;padding:10px;margin-bottom:15px; color:#2563eb;">
+                        ${Object.entries(options)
+                            .map(([value, text]) => `<option value="${value}">${text}</option>`)
+                            .join("")}
+                    </select>
+
+                    <div style="display:flex;gap:10px;justify-content:center;">
+                        <button id="btnOk" style="padding:8px 20px;">حفظ</button>
+                        <button id="btnCancel" style="padding:8px 20px;">إلغاء</button>
+                    </div>
+                `;
+
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+
+                box.querySelector("#btnOk").onclick = () => {
+                    const value = box.querySelector("#ratingSelect").value;
+                    document.body.removeChild(overlay);
+                    resolve(value);
+                };
+
+                box.querySelector("#btnCancel").onclick = () => {
+                    document.body.removeChild(overlay);
+                    resolve(null);
+                };
+            });
+
+            if (selected === null) {
+                return;
+            }
+
+            const { error: ratingError } = await supabaseClient
+                .from("ratings")
+                .insert({
+                    ticket_id: ticket,
+                    rating: Number(selected)
+                });
+
+            if (ratingError) {
+                console.error(ratingError);
+                alert(ratingError.message);
+                return;
+            }
+        }
+
+        // تحديث حالة التذكرة في قاعدة البيانات
+        const { error } = await supabaseClient
+            .from("tickets")
+            .update({
+                status: status
+            })
+            .eq("id", ticket);
+
+        if (error) {
+            console.error(error);
+            alert(error.message);
+            return;
+        }
+
+        await loadTickets();
+
+    } catch (ex) {
+        console.error(ex);
+    }
+}
+
+
+
+
+async function loadTickets(){
+
+    await loadUsers();
+
+    let { data, error } = await supabaseClient
+    .from("tickets")
+    .select(`
+        *,
+        engineer:users!tickets_assigned_to_fkey!inner(
+            id,
+            name,
+            role
+        )
+    `)
+    .eq("created_by", user.id)
+    .in("engineer.role", ["hr", "admin_hr"]);
+    if(!data){
+        document.getElementById("ticketsTable").innerHTML="";
+        return;
+    }
+
+    // ترتيب الحالات
+    const priority = {
+
+        open:0,
+
+        assigned:0,
+
+        in_progress:1,
+
+        resolved:2,
+
+        waiting_confirmation:2,
+
+        closed:3
+
+    };
+
+    data.sort((a,b)=>{
+
+        let p1 = priority[a.status] ?? 99;
+
+        let p2 = priority[b.status] ?? 99;
+
+        if(p1!==p2) return p1-p2;
+
+        return new Date(b.created_at)-new Date(a.created_at);
+
+    });
+
+    const filter =
+    document.getElementById("statusFilter")?.value || "all";
+
+    let html="";
+
+    for(const t of data){
+
+        // الفلترة
+
+        if(filter!="all"){
+
+            if(filter=="open"){
+
+                if(
+                    t.status!="open" &&
+                    t.status!="assigned"
+                ){
+                    continue;
+                }
+
+            }
+
+            else if(filter=="in_progress"){
+
+                if(t.status!="in_progress"){
+                    continue;
+                }
+
+            }
+
+            else if(filter=="resolved"){
+
+                if(
+                    t.status!="resolved" &&
+                    t.status!="waiting_confirmation"
+                ){
+                    continue;
+                }
+
+            }
+
+            else if(filter=="closed"){
+
+                if(t.status!="closed"){
+                    continue;
+                }
+
+            }
+
+        }
+
+        let engineerName =
+        usersMap[t.assigned_to] || "غير محدد";
+
+        let solution="";
+
+        let rating="";
+
+        if(
+
+            t.status=="resolved" ||
+
+            t.status=="waiting_confirmation" ||
+
+            t.status=="closed"
+
+        ){
+
+            let {data:sol} = await supabaseClient
+
+            .from("ticket_solution")
+
+            .select("*")
+
+            .eq("ticket_id",t.id);
+
+            if(sol && sol.length){
+
+                solution = sol[0].solution_text;
+
+            }
+
+        }
+
+        if(t.status=="closed"){
+
+            let {data:r}=await supabaseClient
+
+            .from("ratings")
+
+            .select("*")
+
+            .eq("ticket_id",t.id);
+
+            if(r && r.length){
+
+                rating = r[0].rating;
+
+            }
+
+        }
+
+        let statusText="";
+
+        let statusClass="";
+
+        switch(t.status){
+
+            case "open":
+
+            case "assigned":
+
+                statusText="مفتوحة";
+
+                statusClass="status-open";
+
+                break;
+
+            case "in_progress":
+
+                statusText="جاري العمل";
+
+                statusClass="status-progress";
+
+                break;
+
+            case "resolved":
+
+            case "waiting_confirmation":
+
+                statusText="تم الرد";
+
+                statusClass="status-resolved";
+
+                break;
+
+            case "closed":
+
+                statusText="مغلقة";
+
+                statusClass="status-closed";
+
+                break;
+
+            default:
+
+                statusText=t.status;
+
+                statusClass="";
+
+        }
+                html += `
+
+        <div class="ticket-row">
+
+            <div class="ticket-summary"
+                 onclick="toggleTicket(${t.id})">
+
+                <div class="arrow"
+                     id="arrow-${t.id}">
+                    ▶
+                </div>
+
+                <div class="ticket-title">
+    ${t.title}
+</div>
+
+<div class="ticket-engineer">
+    ${engineerName}
+</div>
+
+                <div>
+
+                    <span class="status-badge ${statusClass}">
+
+                        ${statusText}
+
+                    </span>
+
+                </div>
+
+                <div onclick="event.stopPropagation()">
+    <select onchange="changeStatus(${t.id}, this.value)">
+        <option value="">تغيير الحالة</option>
+        
+        <option value="closed">إغلاق التيكت</option>
+
+        ${(t.status === "open" || t.status === "assigned") ? `
+            <option value="delete" style="color: red;">حذف التيكت</option>
+        ` : ""}
+    </select>
+</div>
+
+            </div>
+
+            <div
+                class="ticket-details"
+                id="ticket-${t.id}">
+
+                <div class="ticket-info">
+
+<div class="ticket-label">
+الوصف  
+</div>
+
+<div class="ticket-value">
+${t.description || "لا يوجد"}
+</div>
+
+</div>
+
+                <div class="ticket-info">
+
+<div class="ticket-label">
+مكان  مقدم التيكت
+</div>
+
+<div class="ticket-value">
+${t.location || "غير محدد"}
+</div>
+
+</div>
+
+                ${
+                    solution
+                    ?
+
+                    `
+                    <div class="ticket-solution">
+
+<div class="ticket-label">
+الرد  
+</div>
+
+<div class="ticket-value">
+${solution}
+</div>
+
+</div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+                ${
+                    rating
+                    ?
+
+                    `
+                    <div class="ticket-rating">
+
+⭐ تقييم الخدمة : ${rating}/5
+
+</div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+        </div>
+
+        `;
+            }
+
+    document.getElementById("ticketsTable").innerHTML = html;
+
+}
+
+function toggleTicket(id){
+
+    const details=document.getElementById("ticket-"+id);
+
+    const arrow=document.getElementById("arrow-"+id);
+
+    const row=details.previousElementSibling;
+
+    const opened=details.classList.contains("show");
+
+    document.querySelectorAll(".ticket-details").forEach(e=>{
+
+        e.classList.remove("show");
+
+    });
+
+    document.querySelectorAll(".arrow").forEach(e=>{
+
+        e.classList.remove("open");
+
+        e.innerHTML="▼";
+
+    });
+
+    document.querySelectorAll(".ticket-summary").forEach(e=>{
+
+        e.classList.remove("active");
+
+    });
+
+    if(!opened){
+
+        details.classList.add("show");
+
+        arrow.classList.add("open");
+
+        arrow.innerHTML="▲";
+
+        row.classList.add("active");
+
+    }
+
+}
+// دالة حذف التذكرة المستقلة
+async function deleteTicket(ticketId, status) {
+    // التأكد من أن الحالة لا تزال مفتوحة (أمان إضافي في الفرونت إند)
+    if (status !== "open" && status !== "assigned") {
+        alert("عفواً، لا يمكن حذف التذكرة إلا إذا كانت حالتها مفتوحة.");
+        return;
+    }
+
+    const confirmDelete = confirm("هل أنت تأكد من أنك تريد حذف هذه التذكرة نهائياً؟");
+    if (!confirmDelete) return;
+
+    const { error } = await supabaseClient
+        .from("tickets")
+        .delete()
+        .eq("id", ticketId);
+
+    if (error) {
+        alert("حدث خطأ أثناء حذف التذكرة: " + error.message);
+    } else {
+        alert("تم حذف التذكرة بنجاح.");
+        loadTickets(); // إعادة تحميل الجدول بعد الحذف
+    }
+}
+
+
+// =======================================================
+// 1. جلب وعرض تذاكر الاعتماد الخاصة بالموظف الحالي
+// =======================================================
+// =======================================================
+// جلب وعرض تذاكر الاعتماد الخاصة بالموظف الحالي (محدثة بالكامل)
+// =======================================================
+// متغير لتتبع الحالة الحالية (false = عرض الطلبات الحالية/النشطة والمرفوضة، true = عرض الطلبات المعتمدة والمغلقة)
+let showArchivedTickets = false;
+let cachedApprovalTickets = []; // تخزين التذاكر لتجنب إعادة الاستعلام من قاعدة البيانات عند التبديل
+
+async function loadMyApprovalTickets() {
+    try {
+        const tableBody = document.getElementById("approvalTicketsTableBody");
+        if (!tableBody) return;
+
+        // جلب جميع تذاكر المستخدم مرة واحدة وترتيبها
+        const { data: tickets, error } = await supabaseClient
+            .from("approval_tickets")
+            .select(`
+                id,
+                title,
+                description,
+                location,
+                status,
+                rejection_reason,
+                hr_response,
+                dean:dean_id ( name )
+            `)
+            .eq("created_by", user.id)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("خطأ أثناء جلب تذاكر الاعتماد:", error.message);
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">حدث خطأ أثناء تحميل البيانات</td></tr>`;
+            return;
+        }
+
+        // حفظ البيانات في الكاش المحلي
+        cachedApprovalTickets = tickets || [];
+        
+        // عرض الجدول بناءً على الحالة الحالية
+        renderApprovalTickets();
+
+    } catch (ex) {
+        console.error("خطأ في دالة loadMyApprovalTickets:", ex);
+    }
+}
+
+// دالة العرض والتصفية
+function renderApprovalTickets() {
+    const tableBody = document.getElementById("approvalTicketsTableBody");
+    if (!tableBody) return;
+
+    // تصفية البيانات حسب زر التبديل:
+    // إذا كان showArchivedTickets يساوي true يُظهر المعتمدة فقط (completed_by_hr)
+    // إذا كان false يُظهر باقي الطلبات (التي لم تعتمد بعد أو تم رفضها)
+    const filteredTickets = cachedApprovalTickets.filter(ticket => {
+        if (showArchivedTickets) {
+            return ticket.status === 'completed_by_hr';
+        } else {
+            return ticket.status !== 'completed_by_hr';
+        }
+    });
+
+    if (filteredTickets.length === 0) {
+        const emptyMessage = showArchivedTickets 
+            ? "لا توجد طلبات قديمة معتمدة." 
+            : "لا توجد طلبات حالية معلقة أو مرفوضة.";
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#333;">${emptyMessage}</td></tr>`;
+        return;
+    }
+
+    // بناء صفوف الجدول
+    tableBody.innerHTML = filteredTickets.map(ticket => {
+        const deanName = ticket.dean?.name ? `أ.د/ ${ticket.dean.name}` : "لم يحدد بعد";
+        const hrResponse = ticket.hr_response || "—";
+        
+        let statusBadge = getStatusBadgeHTML(ticket.status);
+        if (ticket.status === 'rejected_by_dean' && ticket.rejection_reason) {
+            statusBadge += `
+                <div style="color: #dc3545; font-size: 12px; margin-top: 5px; font-weight: bold;">
+                    سبب الرفض: ${escapeHtml(ticket.rejection_reason)}
+                </div>`;
+        }
+
+        const canDelete = ticket.status !== 'completed_by_hr';
+        const deleteButtonHtml = canDelete 
+            ? `<button class="btn-delete" onclick="deleteApprovalTicket(${ticket.id})">حذف</button>` 
+            : `<span style="color:#777; font-size:12px;">غير قابل للحذف</span>`;
+
+        return `
+            <tr>
+                <td style="color:#000; font-weight:bold;">${escapeHtml(ticket.title)}</td>
+                <td style="color:#000;">${escapeHtml(ticket.description || '—')}</td>
+                <td style="color:#000;">${escapeHtml(ticket.location || '—')}</td>
+                <td style="color:#000; font-weight:500;">${escapeHtml(deanName)}</td>
+                <td>${statusBadge}</td>
+                <td style="color:#000;">${escapeHtml(hrResponse)}</td>
+                <td>${deleteButtonHtml}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+// دالة زر التبديل
+function toggleArchiveView() {
+    showArchivedTickets = !showArchivedTickets;
+    
+    // تحديث نص الزر
+    const btn = document.getElementById("toggleArchiveBtn");
+    if (btn) {
+        btn.innerText = showArchivedTickets 
+            ? "📋 عرض الطلبات الحالية" 
+            : "📁 طلباتي القديمة (المعتمدة)";
+    }
+
+    // إعادة رسم الجدول بالبيانات المفلترة
+    renderApprovalTickets();
+}
+
+// =======================================================
+// 2. دالة ترجمة وتنسيق حالة التذكرة (Status Badges)
+// =======================================================
+function getStatusBadgeHTML(status) {
+    switch (status) {
+        case 'pending_dean':
+            return `<span class="badge badge-warning">بانتظار موافقة العميد</span>`;
+        case 'approved_by_dean':
+            return `<span class="badge badge-info">تمت موافقة العميد (قيد شؤون العاملين)</span>`;
+        case 'rejected_by_dean':
+            return `<span class="badge badge-danger">مرفوض من العميد</span>`;
+        case 'completed_by_hr':
+            return `<span class="badge badge-success">تم الاعتماد والرد</span>`;
+        default:
+            return `<span class="badge">${status}</span>`;
+    }
+}
+
+
+// =======================================================
+// 3. دالة حذف تذكرة الاعتماد
+// =======================================================
+async function deleteApprovalTicket(ticketId) {
+    if (!confirm("هل أنت تأكد من رغبتك في حذف هذه التذكرة؟")) return;
+
+    try {
+        const { error } = await supabaseClient
+            .from("approval_tickets")
+            .delete()
+            .eq("id", ticketId)
+            .eq("created_by", user.id); // التأكيد على حماية الملكية
+
+        if (error) {
+            alert("حدث خطأ أثناء الحذف: " + error.message);
+            return;
+        }
+
+        alert("تم حذف التذكرة بنجاح.");
+        loadMyApprovalTickets(); // إعادة تحديث الجدول بدون إعادة تحميل الصفحة
+
+    } catch (ex) {
+        console.error("خطأ أثناء الحذف:", ex);
+    }
+}
+
+
+// =======================================================
+// 4. الاستماع الفوري للتحديثات (Realtime Notifications)
+// =======================================================
+function subscribeToApprovalUpdates() {
+    supabaseClient
+        .channel('public:approval_tickets_changes')
+        .on(
+            'postgres_changes',
+            {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'approval_tickets',
+                filter: `created_by=eq.${user.id}`
+            },
+            (payload) => {
+                console.log('تحديث جديد على التذكرة:', payload);
+                
+                // إظهار تنبيه للمستخدم
+                alert(`هناك تحديث جديد على طلبك: "${payload.new.title}"`);
+                
+                // إعادة تحميل الجدول فوراً
+                loadMyApprovalTickets();
+            }
+        )
+        .subscribe();
+}
+
+
+// =======================================================
+// 5. دالة تنظيف للنصوص لمنع XSS
+// =======================================================
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+// =======================================================
+// التشغيل التلقائي عند فتح الصفحة
+// =======================================================
+document.addEventListener("DOMContentLoaded", () => {
+    loadMyApprovalTickets();
+    subscribeToApprovalUpdates();
+});
+
+
+// دالة إظهار الإشعار في أعلى الشاشة
+function showToastNotification(message, callbackOnClick) {
+    // إذا كان الإشعار معروضاً بالفعل لا نكرره
+    if (document.getElementById("liveToastAlert")) return;
+
+    const toast = document.createElement("div");
+    toast.id = "liveToastAlert";
+    toast.className = "live-toast-notification";
+    toast.innerHTML = `
+        <span>🔔 ${escapeHtml(message)}</span>
+        <span style="text-decoration: underline; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 4px; font-size: 12px;">اضغط للتحديث</span>
+    `;
+
+    toast.onclick = () => {
+        toast.remove();
+        if (typeof callbackOnClick === "function") {
+            callbackOnClick();
+        } else {
+            window.location.reload();
+        }
+    };
+
+    document.body.appendChild(toast);
+}
+
+let employeeLastStateHash = null;
+
+// تشغيل تفقد التحديثات الخاصة بالموظف كل 3 ثوانٍ
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof user !== "undefined" && user?.id) {
+        // جلب بصمة أولية للطلبات
+        initEmployeeTracker();
+        setInterval(checkEmployeeNotifications, 3000);
+    }
+});
+
+async function initEmployeeTracker() {
+    try {
+        const { data: tickets } = await supabaseClient
+            .from("approval_tickets")
+            .select("id, status, hr_response")
+            .eq("created_by", user.id);
+
+        if (tickets) {
+            employeeLastStateHash = tickets.map(t => `${t.id}-${t.status}-${t.hr_response || ''}`).join("|");
+        }
+    } catch (e) {
+        console.error("خطأ في التهيئة الأولية لمراقب الموظف:", e);
+    }
+}
+
+async function checkEmployeeNotifications() {
+    if (typeof user === "undefined" || !user?.id) return;
+
+    try {
+        const { data: tickets, error } = await supabaseClient
+            .from("approval_tickets")
+            .select("id, status, hr_response")
+            .eq("created_by", user.id);
+
+        if (error || !tickets) return;
+
+        const currentHash = tickets.map(t => `${t.id}-${t.status}-${t.hr_response || ''}`).join("|");
+
+        if (employeeLastStateHash !== null && currentHash !== employeeLastStateHash) {
+            employeeLastStateHash = currentHash; // تحديث البصمة
+
+            showToastNotification("هناك تحديث جديد (اعتماد / رفض / رد) على طلب الاعتماد الخاص بك!", () => {
+                if (typeof loadMyApprovalTickets === "function") {
+                    loadMyApprovalTickets();
+                } else {
+                    window.location.reload();
+                }
+            });
+        }
+    } catch (ex) {
+        console.error("خطأ أثناء تفقد إشعارات الموظف:", ex);
+    }
+}
+
+class DeanManager {
+    constructor(currentUser) {
+        this.currentUser = currentUser;
+        this.lastStateHash = null;
+        this.init();
+    }
+
+    async init() {
+        const jobTitle = this.currentUser?.job_title || "";
+        const isDean = jobTitle.includes("عميد") || jobTitle.includes("عميد الكلية");
+
+        const deanCardContainer = document.getElementById("deanApprovalSection");
+        if (!isDean) {
+            if (deanCardContainer) {
+                deanCardContainer.style.display = "none";
+            }
+            return;
+        }
+
+        if (deanCardContainer) {
+            deanCardContainer.style.display = "block";
+        }
+        
+        await this.loadFacultyTickets();
+
+        // تشغيل التفقد كل 3 ثوانٍ
+        setInterval(() => this.checkNotifications(), 3000);
+    }
+
+    async loadFacultyTickets() {
+        try {
+            const tableBody = document.getElementById("deanTicketsTableBody");
+            if (!tableBody) return;
+
+            const { data: tickets, error } = await supabaseClient
+                .from("approval_tickets")
+                .select(`
+                    id,
+                    title,
+                    description,
+                    location,
+                    status,
+                    created_at,
+                    creator:created_by ( name, job_title )
+                `)
+                .eq("faculty", this.currentUser.faculty)
+                .eq("status", "pending_dean")
+                .order("created_at", { ascending: false });
+
+            if (error) {
+                console.error("خطأ أثناء جلب طلبات العميد:", error.message);
+                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">حدث خطأ أثناء تحميل البيانات</td></tr>`;
+                return;
+            }
+
+            // حفظ بصمة البيانات الحالية منعاً لإطلاق إشعار للبيانات القديمة
+            if (tickets) {
+                this.lastStateHash = tickets.map(t => `${t.id}`).join("|");
+            }
+
+            if (!tickets || tickets.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#000;">لا توجد طلبات اعتماد بانتظار موافقتك حالياً.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = tickets.map(ticket => {
+                const creatorName = ticket.creator?.name || "غير معروف";
+                const creatorJob = ticket.creator?.job_title ? `(${ticket.creator.job_title})` : "";
+                
+                const actionsHtml = `
+                    <button class="btn-approve" onclick="deanManager.approveTicket(${ticket.id})">اعتماد</button>
+                    <button class="btn-reject" onclick="deanManager.rejectTicket(${ticket.id})">رفض</button>
+                `;
+
+                return `
+                    <tr>
+                        <td style="color:#000;"><strong>${escapeHtml(creatorName)}</strong> <br><small style="color:#555;">${escapeHtml(creatorJob)}</small></td>
+                        <td style="color:#000;"><strong>${escapeHtml(ticket.title)}</strong></td>
+                        <td style="color:#000;">${escapeHtml(ticket.description || '—')}</td>
+                        <td style="color:#000;">${escapeHtml(ticket.location || '—')}</td>
+                        <td><span class="badge badge-warning">بانتظار موافقتك</span></td>
+                        <td>${actionsHtml}</td>
+                    </tr>
+                `;
+            }).join("");
+
+        } catch (ex) {
+            console.error("خطأ في loadFacultyTickets:", ex);
+        }
+    }
+
+    // فحص إشعارات العميد عند وجود طلبات جديدة
+    async checkNotifications() {
+        try {
+            const { data: tickets, error } = await supabaseClient
+                .from("approval_tickets")
+                .select("id")
+                .eq("faculty", this.currentUser.faculty)
+                .eq("status", "pending_dean");
+
+            if (error || !tickets) return;
+
+            const currentHash = tickets.map(t => `${t.id}`).join("|");
+
+            if (this.lastStateHash !== null && currentHash !== this.lastStateHash) {
+                // إذا أُضيفت طلبات لم تكن موجودة في البصمة
+                const hasNewItem = tickets.some(t => !this.lastStateHash.includes(`${t.id}`));
+                if (hasNewItem) {
+                    showToastNotification("وصل طلب اعتماد جديد بانتظار موافقتك!", () => {
+                        this.loadFacultyTickets();
+                    });
+                } else {
+                    this.lastStateHash = currentHash;
+                }
+            }
+        } catch (e) {
+            console.error("خطأ أثناء تفقد إشعارات العميد:", e);
+        }
+    }
+
+    async approveTicket(ticketId) {
+        if (!confirm("هل أنت متأكد من اعتماد هذا الطلب وتحويله لشؤون العاملين؟")) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from("approval_tickets")
+                .update({
+                    status: 'approved_by_dean',
+                    dean_id: this.currentUser.id,
+                    updated_at: new Date()
+                })
+                .eq("id", ticketId);
+
+            if (error) {
+                alert("حدث خطأ أثناء اعتماد الطلب: " + error.message);
+                return;
+            }
+
+            alert("تم اعتماد الطلب بنجاح وتوجيهه إلى موظفي شؤون العاملين.");
+            await this.loadFacultyTickets();
+
+        } catch (ex) {
+            console.error("خطأ أثناء الاعتماد:", ex);
+        }
+    }
+
+    async rejectTicket(ticketId) {
+        const reason = prompt("يرجى إدخال سبب رفض الطلب:");
+        if (reason === null) return;
+        
+        if (reason.trim() === "") {
+            alert("يجب كتابة سبب الرفض لتوضيحه للموظف!");
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient
+                .from("approval_tickets")
+                .update({
+                    status: 'rejected_by_dean',
+                    dean_id: this.currentUser.id,
+                    rejection_reason: reason.trim(),
+                    updated_at: new Date()
+                })
+                .eq("id", ticketId);
+
+            if (error) {
+                alert("حدث خطأ أثناء رفض الطلب: " + error.message);
+                return;
+            }
+
+            alert("تم رفض الطلب وتسجيل سبب الرفض للموظف.");
+            await this.loadFacultyTickets();
+
+        } catch (ex) {
+            console.error("خطأ أثناء الرفض:", ex);
+        }
+    }
+}
+
+let deanManager;
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof user !== "undefined") {
+        deanManager = new DeanManager(user);
+    }
+});
+
+function toggleHeaderMenu(hamburgerBtn) {
+    // تبديل حالة زر الشرطات
+    hamburgerBtn.classList.toggle('active');
+    
+    // إظهار أو إخفاء القائمة المنسدلة للهيدر
+    const headerMenu = document.getElementById('headerMenu');
+    headerMenu.classList.toggle('active');
+}
+
+function realtime(){
+
+supabaseClient
+.channel("tickets-channel")
+.on(
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"tickets"
+},
+payload=>{
+loadTickets()
+}
+)
+.subscribe()
+
+}
+
+
+async function init(){
+
+await loadEngineer()
+await loadTickets()
+realtime()
+
+}
+
+init()
+
+
+// منع القائمة المنسدلة عند الضغط بزر الفأرة الأيمن
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // منع اختصارات لوحة المفاتيح الخاصة بأدوات المطور
+    document.addEventListener('keydown', function(e) {
+        // منع F12
+        if (e.key === "F12") {
+            e.preventDefault();
+        }
+        // منع Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+        }
+        // منع Ctrl+U (عرض مصدر الصفحة)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+        }
+    });
+    setInterval(function() {
+        const startTime = performance.now();
+        debugger; // يوقف تنفيذ الكود إذا كانت أدوات المطور مفتوحة
+        const endTime = performance.now();
+        if (endTime - startTime > 100) {
+            // إذا اكتشف فتح F12، يتم توجيه المستخدم أو إعادة تحميل الصفحة
+            window.location.reload();
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>

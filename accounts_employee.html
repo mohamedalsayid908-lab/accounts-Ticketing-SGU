@@ -2346,7 +2346,7 @@ SUPABASE_KEY
 
 let user = JSON.parse(sessionStorage.getItem("user"));
 
-if (!user || user.role !== "employee") {
+if (!user || user.role !== "accounts_employee") {
 
     logout();
 
